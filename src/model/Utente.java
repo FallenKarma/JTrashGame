@@ -7,7 +7,7 @@ public class Utente {
 	private Integer partitePerse;
 	private Integer livello;
 	
-	public Utente (String nickname) {
+	public Utente(String nickname) {
 		this.nickname = nickname;
 		this.partiteGiocate = 0;
 		this.partitePerse = 0;
@@ -23,8 +23,15 @@ public class Utente {
 		this.partitePerse = partitePerse;
 		this.livello = livello;
 	}
-
-
+	
+	public void caricaUtente (String nickname) {
+		
+	}
+	
+	public void salvaUtente (String nickname, Integer partiteGiocate, Integer partiteVinte, Integer partitePerse,
+			Integer livello) {
+		
+	}
 
 	public String getNickname() {
 		return nickname;
@@ -56,5 +63,6 @@ public class Utente {
 	public void setLivello(Integer livello) {
 		this.livello = livello;
 	}
+
 	
 }

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<uml:Model xmi:version="20131001" xmlns:xmi="http://www.omg.org/spec/XMI/20131001" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" xmlns:uml="http://www.eclipse.org/uml2/5.0.0/UML" xmi:id="_w75Z4O5bEe2hWbPJvXaLZA" name="JTrashGame">
+  <packageImport xmi:type="uml:PackageImport" xmi:id="_w_7lUO5bEe2hWbPJvXaLZA">
+    <importedPackage xmi:type="uml:Model" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#_0"/>
+  </packageImport>
+  <packagedElement xmi:type="uml:Class" xmi:id="_JkrtgO5cEe2hWbPJvXaLZA" name="Mazzo"/>
+  <packagedElement xmi:type="uml:Class" xmi:id="_Jv438O5cEe2hWbPJvXaLZA" name="Utente"/>
+  <packagedElement xmi:type="uml:Class" xmi:id="_J5vXgO5cEe2hWbPJvXaLZA" name="Carta">
+    <ownedAttribute xmi:type="uml:Property" xmi:id="_VHheku5cEe2hWbPJvXaLZA" name="mazzo" type="_JkrtgO5cEe2hWbPJvXaLZA" association="_VHg3gO5cEe2hWbPJvXaLZA"/>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Association" xmi:id="_VHg3gO5cEe2hWbPJvXaLZA" memberEnd="_VHheku5cEe2hWbPJvXaLZA _VHiFoO5cEe2hWbPJvXaLZA">
+    <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_VHhekO5cEe2hWbPJvXaLZA" source="org.eclipse.papyrus">
+      <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_VHheke5cEe2hWbPJvXaLZA" key="nature" value="UML_Nature"/>
+    </eAnnotations>
+    <ownedEnd xmi:type="uml:Property" xmi:id="_VHiFoO5cEe2hWbPJvXaLZA" name="carta" type="_J5vXgO5cEe2hWbPJvXaLZA" aggregation="composite" association="_VHg3gO5cEe2hWbPJvXaLZA">
+      <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_jpYlgO5cEe2hWbPJvXaLZA" value="*"/>
+    </ownedEnd>
+  </packagedElement>
+</uml:Model>
