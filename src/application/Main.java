@@ -14,9 +14,8 @@ public class Main extends Application {
 	public void start(Stage primaryStage) throws Exception {
 		Parent root = FXMLLoader.load(getClass().getResource("../view/welcomeView.fxml"));
 		Scene start = new Scene(root,1000,600);
-		start.setFill(Color.GREEN);
+		primaryStage.setScene(start);
 		primaryStage.setTitle("JTrash");
-		primaryStage.setFullScreen(true);
 		primaryStage.show();
 	}
 	
