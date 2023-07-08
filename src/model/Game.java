@@ -12,26 +12,30 @@ public class Game{
 	private Integer numberOfPlayers;
 	private DeckOfCards deckOfCards;
 	private Card lastDiscardedCard;
+	private Boolean gameNotOver;
 	
 	public Game (Integer numberOfPlayers,User user) {
 		this.numberOfPlayers = numberOfPlayers;
 		this.players = new ArrayList<Player>();
 		this.lastDiscardedCard = null;
-		start(user);
+		this.gameNotOver = true;
+		initializeGame(user);
+		start();
 	}
 	
-	public void start(User user) {
+	public void initializeGame(User user) {
 		initializeDeck(numberOfPlayers);
 		initalizePlayers(user);
 		assignCards();
 	}
 	public void initializeDeck (Integer numberOfPlayers) {
 		if (numberOfPlayers <=2 ) {
-			this.deckOfCards= new DeckOfCards(1);
+			this.deckOfCards = new DeckOfCards(1);
 		}
 		else {
-			this.deckOfCards= new DeckOfCards(2);
+			this.deckOfCards = new DeckOfCards(2);
 		}
+		lastDiscardedCard = this.deckOfCards.drawACard();
 	}
 	
 	public void initalizePlayers (User user) {
@@ -47,8 +51,20 @@ public class Game{
 		}
 	}
 	
+	public void start() {
+		while (gameNotOver) {
+			playRound();
+		}
+	}
 
-	public Collection<Player> getPlayers() {
+	public void playRound() {
+		for (Player player: players) {
+			//
+			//
+			//
+		}
+	}
+ 	public Collection<Player> getPlayers() {
 		return players;
 	}
 
