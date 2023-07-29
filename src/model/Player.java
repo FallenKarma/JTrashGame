@@ -56,7 +56,12 @@ public class Player extends User{
 		}
 	}
 
-    /**
+	
+    public void setCardInHand(Card cardInHand) {
+		this.cardInHand = cardInHand;
+	}
+
+	/**
      * Diminuisce di uno il numero di carte sul tavolo, da usare quando il player vince un turno
      * 
      */
@@ -64,6 +69,6 @@ public class Player extends User{
 		this.tableCardsNumber -= 1 ;
 	}
 
-
+	
 	
 }

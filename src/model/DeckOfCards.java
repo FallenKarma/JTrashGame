@@ -6,19 +6,13 @@ import java.util.Collections;
 
 public class DeckOfCards {
 	private ArrayList<Card> deck;
-	
-    String[] Ranks = {
-            "2", "3", "4", "5", "6", "7", "8", "9", "10",
-            "jack", "queen", "king", "ace"
-        };
+
     
 	public DeckOfCards (Integer numberOfDecks) {
 		this.deck = new ArrayList<>();
-		for (int i=0; i<numberOfDecks; i++) {
+		for (Rank rank:Rank.values()) {
 			for (Suits suit: Suits.values()) {
-				for (String rank:Ranks) {
-					deck.add(new Card(rank,suit));
-				}
+				deck.add(new Card(rank,suit));
 			}
 		}
 		shuffle();

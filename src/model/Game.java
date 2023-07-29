@@ -59,9 +59,13 @@ public class Game{
 
 	public void playRound() {
 		for (Player player: players) {
-			//
-			//
-			//
+			while (player.getCardInHand().getValue()>0 ) {
+				Card cardInHand = player.getCardInHand();
+				player.setCardInHand(player.getTableCards().get(cardInHand.getValue()));
+				//
+				//
+				//
+			}
 		}
 	}
  	public Collection<Player> getPlayers() {
