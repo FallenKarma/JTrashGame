@@ -11,7 +11,7 @@ import java.util.List;
 
 public class Player extends User{
 	
-	private List<Card> tableCards;
+	private Card[] tableCards;
 	private Integer tableCardsNumber;
 	private Card cardInHand;
 	
@@ -19,14 +19,18 @@ public class Player extends User{
 	public Player (String username) {
 		super(username);
 		this.tableCardsNumber=10;
-		this.tableCards = new ArrayList<>();
+		this.tableCards = new Card[tableCardsNumber];
 	}
 	
+	public void setTableCards(Card[] tableCards) {
+		this.tableCards = tableCards;
+	}
+
 	//costruttore per bot
 	public Player () {
 		super();
 		this.tableCardsNumber=10;
-		this.tableCards = new ArrayList<>();
+		this.tableCards = new Card[tableCardsNumber];
 	}
 	
 	
@@ -42,18 +46,21 @@ public class Player extends User{
 	public Integer getTableCardsNumber() {
 		return tableCardsNumber;
 	}
-	public List<Card> getTableCards() {
+	public Card[] getTableCards() {
 		return tableCards;
 	}
 
-	public void setTableCards(ArrayList<Card> tableCards) {
-		this.tableCards = tableCards;
-	}
 
-	public void setTableCards (Collection<Card> collection) {
-		for (Card card:collection) {
-			this.tableCards.add(card);
-		}
+
+	/**
+	 * This method places the player's card in hand
+	 * into his corresponding position and take the 
+	 * face down card in hand
+	 */
+	public void switchTableCard () {
+		Card temporary = this.cardInHand;
+		cardInHand = this.tableCards[cardInHand.getValue()];
+		this.tableCards[temporary.getValue()] = temporary;
 	}
 
 	
@@ -69,6 +76,13 @@ public class Player extends User{
 		this.tableCardsNumber -= 1 ;
 	}
 
-	
+	////////////////////////////////////////
+	//DEBUGGING METHODS
+	////////////////////////////////////////ù
+	void printCardsInHand () {
+		for (int i=0; i<tableCardsNumber; i++) {
+			System.out.println(this.tableCards[i]);
+		}
+	}
 	
 }

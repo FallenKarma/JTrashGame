@@ -47,7 +47,7 @@ public class Game{
 	
 	public void assignCards () {
 		for (Player player : players) {
-			player.setTableCards(deckOfCards.drawCards(player.getTableCardsNumber()));
+			deckOfCards.drawCards(player.getTableCardsNumber()).toArray(player.getTableCards());
 		}
 	}
 	
@@ -59,12 +59,9 @@ public class Game{
 
 	public void playRound() {
 		for (Player player: players) {
-			while (player.getCardInHand().getValue()>0 ) {
-				Card cardInHand = player.getCardInHand();
-				player.setCardInHand(player.getTableCards().get(cardInHand.getValue()));
-				//
-				//
-				//
+			int cardValue = player.getCardInHand().getValue();
+			while (cardValue >0 && cardValue <= player.getTableCardsNumber() ) {
+				player.switchTableCard();
 			}
 		}
 	}
