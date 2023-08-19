@@ -18,7 +18,7 @@ public class Player extends User{
 	//costruttore per giocatore reale
 	public Player (String username) {
 		super(username);
-		this.tableCardsNumber=10;
+		this.tableCardsNumber = 10;
 		this.tableCards = new Card[tableCardsNumber];
 	}
 	
@@ -58,11 +58,18 @@ public class Player extends User{
 	 * face down card in hand
 	 */
 	public void switchTableCard () {
-		Card temporary = this.cardInHand;
-		cardInHand = this.tableCards[cardInHand.getValue()];
-		this.tableCards[temporary.getValue()] = temporary;
+		int position = cardInHand.getValue();
+		if (position<11 && this.tableCards[position].isFaceDown()) {
+			Card nextCardOnTheTable = this.cardInHand;
+			nextCardOnTheTable.setFaceUp();
+			cardInHand = this.tableCards[position];
+			this.tableCards[position] = nextCardOnTheTable;
+		}
 	}
 
+	public Card discard() {
+		return cardInHand;
+	}
 	
     public void setCardInHand(Card cardInHand) {
 		this.cardInHand = cardInHand;
@@ -84,5 +91,7 @@ public class Player extends User{
 			System.out.println(this.tableCards[i]);
 		}
 	}
+
+
 	
 }

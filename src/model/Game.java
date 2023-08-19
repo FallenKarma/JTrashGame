@@ -59,18 +59,50 @@ public class Game{
 
 	public void playRound() {
 		for (Player player: players) {
+			player.draw(deckOfCards.drawACard());
 			int cardValue = player.getCardInHand().getValue();
-			while (cardValue >0 && cardValue <= player.getTableCardsNumber() ) {
+			while (cardValue > 0 ) {
 				player.switchTableCard();
 			}
+			lastDiscardedCard = player.discard();
+			winCheck(player);
 		}
 	}
- 	public Collection<Player> getPlayers() {
+	
+	
+	private void winCheck(Player player) {
+		boolean roundWon = true;
+		for (Card card:player.getTableCards()) {
+			if (card.isFaceDown()) {
+				roundWon = false;
+				break;
+			}
+		}
+		if (roundWon) {
+			player.reduceTableCardsNumber();
+			restoreTable();
+		}
+	}
+	
+ 	private void restoreTable() {
+		initializeDeck(numberOfPlayers);
+		assignCards();
+	}
+
+	public Collection<Player> getPlayers() {
 		return players;
 	}
 
 	public void setPlayers(Collection<Player> players) {
 		this.players = players;
+	}
+
+	public Card getLastDiscardedCard() {
+		return lastDiscardedCard;
+	}
+
+	public void setLastDiscardedCard(Card lastDiscardedCard) {
+		this.lastDiscardedCard = lastDiscardedCard;
 	}
 
 	public Integer getNumberOfPlayers() {

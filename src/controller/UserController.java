@@ -72,7 +72,7 @@ public class UserController {
 		}
 		GameController gameController = loader.getController();
 		Integer numberOfPlayers = this.numberOfBots.getValue()+1;
-		gameController.setUpGame(numberOfPlayers,this.user);
+		gameController.setUpGameView(numberOfPlayers,this.user);
 		Stage stage = (Stage) ((Node)event.getSource()).getScene().getWindow();
 		Scene scene = new Scene(root);
 		stage.setFullScreen(true);

@@ -37,7 +37,7 @@
          <children>
             <ImageView fx:id="deckImageView" fitHeight="90.0" pickOnBounds="true" preserveRatio="true" rotate="90.0" GridPane.columnIndex="5" GridPane.halignment="CENTER" GridPane.rowIndex="4">
                <image>
-                  <Image url="@../../bin/resources/carte/retro.png" />
+                  <Image url="@../resources/carte/backOfCards.png" />
                </image>
             </ImageView>
             <ImageView fx:id="userSlot6" fitHeight="90.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.rowIndex="9" GridPane.valignment="BOTTOM" />
@@ -59,32 +59,17 @@
                <image>
                   <Image url="@../../bin/resources/carte/2_of_clubs.png" />
                </image></ImageView>
-            <ImageView fitHeight="110.0" fitWidth="145.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="9" GridPane.rowIndex="6">
-               <image>
-                  <Image url="@../../bin/resources/carte/3_of_spades.png" />
-               </image>
-            </ImageView>
-            <ImageView fitHeight="110.0" fitWidth="145.0" layoutX="1310.0" layoutY="735.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="10" GridPane.rowIndex="2">
-               <image>
-                  <Image url="@../../bin/resources/carte/4_of_diamonds.png" />
-               </image>
-            </ImageView>
-            <ImageView fx:id="userSlot41" fitHeight="110.0" fitWidth="145.0" layoutX="910.0" layoutY="855.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="7" GridPane.rowIndex="1">
-               <image>
-                  <Image url="@../../bin/resources/carte/6_of_spades.png" />
-               </image>
-            </ImageView>
-            <ImageView fx:id="userSlot411" fitHeight="110.0" fitWidth="145.0" layoutX="1060.0" layoutY="135.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="3">
-               <image>
-                  <Image url="@../../bin/resources/carte/6_of_clubs.png" />
-               </image>
-            </ImageView>
-            <ImageView fx:id="userSlot22" fitHeight="110.0" fitWidth="145.0" layoutX="610.0" layoutY="855.0" pickOnBounds="true" preserveRatio="true" GridPane.rowIndex="6" />
-            <ImageView fx:id="userSlot31" fitHeight="110.0" fitWidth="145.0" layoutX="760.0" layoutY="855.0" pickOnBounds="true" preserveRatio="true" rotate="90.0" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="2">
-               <image>
-                  <Image url="@../../bin/resources/carte/10_of_spades.png" />
-               </image>
-            </ImageView>
+            <ImageView fx:id="p1slot6" fitHeight="110.0" fitWidth="145.0" pickOnBounds="true" preserveRatio="true" rotate="90.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+            <ImageView fx:id="p1slot7" fitHeight="110.0" fitWidth="145.0" pickOnBounds="true" preserveRatio="true" rotate="90.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+            <ImageView fx:id="p1slot8" fitHeight="110.0" fitWidth="145.0" pickOnBounds="true" preserveRatio="true" rotate="90.0" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+            <ImageView fx:id="p1slot9" fitHeight="110.0" fitWidth="145.0" pickOnBounds="true" preserveRatio="true" rotate="90.0" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+            <ImageView fx:id="p1slot10" fitHeight="110.0" fitWidth="145.0" pickOnBounds="true" preserveRatio="true" rotate="90.0" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+            <ImageView fx:id="p1slot1" fitHeight="110.0" fitWidth="145.0" pickOnBounds="true" preserveRatio="true" rotate="90.0" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+            <ImageView fx:id="p1slot2" fitHeight="110.0" fitWidth="145.0" pickOnBounds="true" preserveRatio="true" rotate="90.0" GridPane.columnIndex="2" GridPane.rowIndex="3" />
+            <ImageView fx:id="p1slot3" fitHeight="110.0" fitWidth="145.0" pickOnBounds="true" preserveRatio="true" rotate="90.0" GridPane.columnIndex="2" GridPane.rowIndex="4" />
+            <ImageView fx:id="p1slot4" fitHeight="110.0" fitWidth="145.0" pickOnBounds="true" preserveRatio="true" rotate="90.0" GridPane.columnIndex="2" GridPane.rowIndex="5" />
+            <ImageView fx:id="p1slot5" fitHeight="110.0" fitWidth="145.0" pickOnBounds="true" preserveRatio="true" rotate="90.0" GridPane.columnIndex="2" GridPane.rowIndex="6" />
+            <ImageView fx:id="wastePile" fitHeight="110.0" fitWidth="145.0" pickOnBounds="true" preserveRatio="true" rotate="90.0" GridPane.columnIndex="4" GridPane.rowIndex="4" />
          </children>
       </GridPane>
    </children>

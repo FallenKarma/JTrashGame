@@ -1,19 +1,19 @@
 package model;
 
 public enum Rank {
-	ACE(1),
-    TWO(2),
-    THREE(3),
-    FOUR(4),
-    FIVE(5),
-    SIX(6),
-    SEVEN(7),
-    EIGHT(8),
-    NINE(9),
-    TEN(10),
-    JACK(0),
-    QUEEN(0),
-    KING(0);
+	ace(1),
+    two(2),
+    three(3),
+    four(4),
+    five(5),
+    six(6),
+    seven(7),
+    eight(8),
+    nine(9),
+    ten(10),
+    jack(0),
+    queen(0),
+    king(11);
 	
 	private final int value;
 
