@@ -69,7 +69,7 @@
             <ImageView fx:id="p1slot3" fitHeight="110.0" fitWidth="145.0" pickOnBounds="true" preserveRatio="true" rotate="90.0" GridPane.columnIndex="2" GridPane.rowIndex="4" />
             <ImageView fx:id="p1slot4" fitHeight="110.0" fitWidth="145.0" pickOnBounds="true" preserveRatio="true" rotate="90.0" GridPane.columnIndex="2" GridPane.rowIndex="5" />
             <ImageView fx:id="p1slot5" fitHeight="110.0" fitWidth="145.0" pickOnBounds="true" preserveRatio="true" rotate="90.0" GridPane.columnIndex="2" GridPane.rowIndex="6" />
-            <ImageView fx:id="wastePile" fitHeight="110.0" fitWidth="145.0" pickOnBounds="true" preserveRatio="true" rotate="90.0" GridPane.columnIndex="4" GridPane.rowIndex="4" />
+            <ImageView fx:id="wastePile" fitHeight="110.0" fitWidth="145.0" onMouseClicked="#drawFromWastePile" pickOnBounds="true" preserveRatio="true" rotate="90.0" GridPane.columnIndex="4" GridPane.rowIndex="4" />
          </children>
       </GridPane>
    </children>

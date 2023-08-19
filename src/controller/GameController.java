@@ -24,7 +24,7 @@ import model.User;
 public class GameController implements Initializable{
 	
 	private final String imagesExtension = ".png";
-	private final String  imagesRootPath = "C:/Users/admin/eclipse-workspace/JTrashGame/src/resources/carte/";
+	private String  imagesRootPath;
 	private Game game;
 	
 	List<ImageView> imageViews;
@@ -52,7 +52,7 @@ public class GameController implements Initializable{
 	ImageView userSlot7;
 	@FXML
 	ImageView userSlot8;
-	@FXML
+	@FXML 
 	ImageView userSlot9;
 	@FXML
 	ImageView userSlot10;
@@ -81,6 +81,8 @@ public class GameController implements Initializable{
 	
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
+		String currentDirectory = System.getProperty("user.dir");
+		this.imagesRootPath = currentDirectory + "\\src\\resources\\carte\\";
 		imageViews = new ArrayList<>();
 		intializeImageViews();
 	}
@@ -100,7 +102,7 @@ public class GameController implements Initializable{
 			int position = playerNumber * 10 + i;
 			imageViews.get(position).setImage(new Image(imagesRootPath + "backOfCards.png"));
 		}
-		wastePile.setImage(new Image(imagesRootPath + game.getLastDiscardedCard().toString() + ".png"));
+		wastePile.setImage(new Image(imagesRootPath + game.getLastDiscardedCard().toString() + imagesExtension));
 	}
 	
 	public void drawFromWastePile() {
