@@ -9,32 +9,41 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.Observable;
+import java.util.Observer;
 
-
+import javafx.animation.PauseTransition;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
+import javafx.util.Duration;
 import model.Card;
 import model.Game;
 import model.Player;
 import model.User;
 
-public class GameController implements Initializable{
+public class GameController implements Initializable {
 	
-	private final String imagesExtension = ".png";
-	private String  imagesRootPath;
 	private Game game;
 	
 	List<ImageView> imageViews;
 	
 	
 	@FXML
+	GridPane cardsPane;
+	
+	@FXML
 	ImageView wastePile;
 	
 	@FXML
-	GridPane cardsPane;
+	ImageView cardInHand;
+	
+	@FXML
+	Label userMessages;
 	
 	@FXML
 	ImageView userSlot1;
@@ -81,8 +90,6 @@ public class GameController implements Initializable{
 	
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
-		String currentDirectory = System.getProperty("user.dir");
-		this.imagesRootPath = currentDirectory + "\\src\\resources\\carte\\";
 		imageViews = new ArrayList<>();
 		intializeImageViews();
 	}
@@ -100,14 +107,38 @@ public class GameController implements Initializable{
 	public void assignCards (Player player,int playerNumber) {
 		for (int i=0; i < player.getTableCardsNumber(); i++) {
 			int position = playerNumber * 10 + i;
-			imageViews.get(position).setImage(new Image(imagesRootPath + "backOfCards.png"));
+			imageViews.get(position).setImage(CardImagesLoader.getBackOfCardImage());
 		}
-		wastePile.setImage(new Image(imagesRootPath + game.getLastDiscardedCard().toString() + imagesExtension));
+		wastePile.setImage(CardImagesLoader.getImageFromCardName(game.getWastePile().peek().toString()));
+	}
+	
+	
+	public void drawFromDeck () {
+		Player currentPlayer = game.getCurrentPlayer();
+		currentPlayer.setCardInHand(game.getDeckOfCards().drawACard());
+    	if (!currentPlayer.isBot()) {
+    		cardInHand.setImage(CardImagesLoader.getImageFromCardName(currentPlayer.getCardInHand().toString()));
+    	}
 	}
 	
 	public void drawFromWastePile() {
-		
+		System.out.println("it happened");
+    	Player currentPlayer = game.getCurrentPlayer();
+    	currentPlayer.setCardInHand(game.getWastePile().pop());
+    	setWasteCardView();
+    	cardInHand.setImage(CardImagesLoader.getImageFromCardName(currentPlayer.getCardInHand().toString()));
 	}
+	
+	private void setWasteCardView() {
+		try {
+			wastePile.setImage(CardImagesLoader.getImageFromCardName(game.getWastePile().peek().toString()));
+		}
+		catch (Exception e) {
+			wastePile.setImage(null);
+			userMessages.setText("La pila di carte scartate è vuota!\n Pesca dal mazzo");
+		}
+	}
+
 	
 	public void intializeImageViews () {
 		
@@ -136,6 +167,9 @@ public class GameController implements Initializable{
 		
 		
 	}
+
+
+
 
 
 }

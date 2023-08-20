@@ -1,19 +1,23 @@
 package controller;
 
 import java.io.IOException;
+import java.net.URL;
+import java.util.ResourceBundle;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.TextField;
+import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
 import model.User;
 
-public class LoginController {
+public class LoginController implements Initializable{
 	
 	private Stage stage;
 	private Parent root;
@@ -23,7 +27,13 @@ public class LoginController {
 	@FXML
 	TextField usernameTF;
 	
+	@FXML
+	ImageView imageLeft;
 	
+	@FXML
+	ImageView imageRight;
+	
+
 	public void login (ActionEvent event) throws IOException {
 		String username = usernameTF.getText();
 		if (userNameValidator(username)) {
@@ -71,5 +81,11 @@ public class LoginController {
 	
 	public void unloadUser () {
 		this.user = null;
+	}
+
+	@Override
+	public void initialize(URL arg0, ResourceBundle arg1) {
+		imageLeft.setImage(CardImagesLoader.getImageFromCardName("black_joker"));
+		imageRight.setImage(CardImagesLoader.getImageFromCardName("ace_of_spades"));
 	}
 }

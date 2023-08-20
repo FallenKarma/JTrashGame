@@ -75,6 +75,9 @@ public class Player extends User{
 		this.cardInHand = cardInHand;
 	}
 
+    public boolean isBot() {
+    	return this.getNickname().equals("");
+    }
 	/**
      * Diminuisce di uno il numero di carte sul tavolo, da usare quando il player vince un turno
      * 
@@ -91,7 +94,7 @@ public class Player extends User{
 			System.out.println(this.tableCards[i]);
 		}
 	}
-
+	
 
 	
 }

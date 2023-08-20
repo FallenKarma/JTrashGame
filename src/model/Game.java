@@ -3,24 +3,25 @@ package model;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Observable;
+import java.util.Stack;
 
 import controller.GameController;
 
-public class Game{
+public class Game {
 	
-	private Collection<Player> players;
+	private ArrayList<Player> players;
 	private Integer numberOfPlayers;
 	private DeckOfCards deckOfCards;
-	private Card lastDiscardedCard;
-	private Boolean gameNotOver;
+	private Stack<Card> wastePile;
+	private Boolean gameOver;
+	private int currentPlayer;
 	
 	public Game (Integer numberOfPlayers,User user) {
 		this.numberOfPlayers = numberOfPlayers;
 		this.players = new ArrayList<Player>();
-		this.lastDiscardedCard = null;
-		this.gameNotOver = true;
+		this.wastePile = new Stack<>();
+		this.gameOver = false;
 		initializeGame(user);
-		start();
 	}
 	
 	public void initializeGame(User user) {
@@ -35,11 +36,12 @@ public class Game{
 		else {
 			this.deckOfCards = new DeckOfCards(2);
 		}
-		lastDiscardedCard = this.deckOfCards.drawACard();
+		wastePile.add(this.deckOfCards.drawACard());
 	}
 	
 	public void initalizePlayers (User user) {
 		players.add(new Player(user.getNickname()));
+		this.currentPlayer = 0;
 		for (int i = 1; i < numberOfPlayers ; i++) {
 			players.add(new Player());
 		}
@@ -47,41 +49,30 @@ public class Game{
 	
 	public void assignCards () {
 		for (Player player : players) {
-			deckOfCards.drawCards(player.getTableCardsNumber()).toArray(player.getTableCards());
+			player.setTableCards(deckOfCards.drawCards(player.getTableCardsNumber()).toArray(player.getTableCards()));
 		}
 	}
 	
-	public void start() {
-//		while (gameNotOver) {
-//			playRound();
-//		}
+	public void NextRound() {
+		currentPlayer += 1;
+		roundWonCheck();
 	}
 
-	public void playRound() {
-		for (Player player: players) {
-			player.draw(deckOfCards.drawACard());
-			int cardValue = player.getCardInHand().getValue();
-			while (cardValue > 0 ) {
-				player.switchTableCard();
-			}
-			lastDiscardedCard = player.discard();
-			winCheck(player);
-		}
+	public Player getCurrentPlayer() {
+		return players.get(currentPlayer);
 	}
-	
-	
-	private void winCheck(Player player) {
-		boolean roundWon = true;
-		for (Card card:player.getTableCards()) {
-			if (card.isFaceDown()) {
-				roundWon = false;
-				break;
-			}
+
+
+	private void roundWonCheck() {
+		for (Card card: getCurrentPlayer().getTableCards() ) {
+			if (card.isFaceDown()) 
+				return ;
 		}
-		if (roundWon) {
-			player.reduceTableCardsNumber();
-			restoreTable();
-		}
+		gameOver = true;
+		///
+		//IMPLEMENTARE FUNZIONE PER GAMEWONCHECK
+		//IMPLEMENTA FUNZIONE CHE MOSTRA MESSAGGIO DI VITTORIA O SCONFITTA
+		///
 	}
 	
  	private void restoreTable() {
@@ -94,15 +85,17 @@ public class Game{
 	}
 
 	public void setPlayers(Collection<Player> players) {
-		this.players = players;
+		this.players = (ArrayList<Player>) players;
 	}
 
-	public Card getLastDiscardedCard() {
-		return lastDiscardedCard;
+	
+
+	public Stack<Card> getWastePile() {
+		return wastePile;
 	}
 
-	public void setLastDiscardedCard(Card lastDiscardedCard) {
-		this.lastDiscardedCard = lastDiscardedCard;
+	public void setWastePile(Stack<Card> wastePile) {
+		this.wastePile = wastePile;
 	}
 
 	public Integer getNumberOfPlayers() {
