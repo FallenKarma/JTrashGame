@@ -122,7 +122,6 @@ public class GameController implements Initializable {
 	}
 	
 	public void drawFromWastePile() {
-		System.out.println("it happened");
     	Player currentPlayer = game.getCurrentPlayer();
     	currentPlayer.setCardInHand(game.getWastePile().pop());
     	setWasteCardView();
@@ -136,6 +135,7 @@ public class GameController implements Initializable {
 		catch (Exception e) {
 			wastePile.setImage(null);
 			userMessages.setText("La pila di carte scartate è vuota!\n Pesca dal mazzo");
+			userMessages.setText(null);
 		}
 	}
 
