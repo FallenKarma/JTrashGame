@@ -14,6 +14,8 @@ public class CardImagesLoader {
 	}
 	
 	public static Image getBackOfCardImage () {
-		return new Image(imagesRootPath + backOfCardsImageName + imagesExtension);
+		String currentDirectory = System.getProperty("user.dir");
+		imagesRootPath = currentDirectory + "\\src\\resources\\carte\\";
+		return new Image(currentDirectory + backOfCardsImageName + imagesExtension);
 	}
 }

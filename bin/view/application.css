@@ -1,0 +1,9 @@
+.gridPane {
+	 -fx-background-image: url('file:/C:/Users/gabry/JTrashGame/src/resources/background.jpg');
+	 -fx-background-size: 1000px 600px;
+}
+
+.welcomeViewMiddlePhrase {
+	-fx-border-style: solid;
+	-fx-background-color: white;
+}
