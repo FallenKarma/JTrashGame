@@ -1,0 +1,8 @@
+.gridPane {
+	-fx-background-color: green;
+}
+
+.welcomeViewMiddlePhrase {
+	-fx-border-style: solid;
+	-fx-background-color: white;
+}

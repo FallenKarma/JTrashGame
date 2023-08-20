@@ -122,7 +122,6 @@ public class GameController implements Initializable {
 	}
 	
 	public void drawFromWastePile() {
-		System.out.println("it happened");
     	Player currentPlayer = game.getCurrentPlayer();
     	currentPlayer.setCardInHand(game.getWastePile().pop());
     	setWasteCardView();
