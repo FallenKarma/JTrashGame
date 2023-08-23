@@ -16,6 +16,8 @@ import javafx.animation.PauseTransition;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -29,8 +31,15 @@ import model.User;
 public class GameController implements Initializable {
 	
 	private Game game;
+	private final Integer cardSpotsPerPlayer = 10;
 	
 	List<ImageView> imageViews;
+	
+	
+	@FXML
+	Button wastePileButton;
+	@FXML
+	Button deckButton;
 	
 	
 	@FXML
@@ -94,19 +103,44 @@ public class GameController implements Initializable {
 		intializeImageViews();
 	}
 	
-	public void setUpGameView (Integer numberOfPlayers,User user) {
+	public void setUpGame (Integer numberOfPlayers,User user) {
 		game = new Game (numberOfPlayers,user );
 		int i = 0;
 		for (Player player: game.getPlayers() ) {
 			assignCards (player,i);
 			i++;
 		}
+		start();
 	}
 	
 	
+	private void start() {
+		drawPhase();
+		gamePhase();
+		endRoundPhase();
+	}
+
+	private void endRoundPhase() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	private void gamePhase() {
+		
+	}
+
+	private void drawPhase() {
+		if (!game.getCurrentPlayer().isBot()) {
+			enableGameButtons();
+		}
+		else {
+			drawFromDeck();
+		}
+	}
+
 	public void assignCards (Player player,int playerNumber) {
 		for (int i=0; i < player.getTableCardsNumber(); i++) {
-			int position = playerNumber * 10 + i;
+			int position = playerNumber * cardSpotsPerPlayer + i;
 			imageViews.get(position).setImage(CardImagesLoader.getBackOfCardImage());
 		}
 		wastePile.setImage(CardImagesLoader.getImageFromCardName(game.getWastePile().peek().toString()));
@@ -117,24 +151,46 @@ public class GameController implements Initializable {
 		Player currentPlayer = game.getCurrentPlayer();
 		currentPlayer.setCardInHand(game.getDeckOfCards().drawACard());
     	if (!currentPlayer.isBot()) {
+    		disableGameButtons();
     		cardInHand.setImage(CardImagesLoader.getImageFromCardName(currentPlayer.getCardInHand().toString()));
     	}
 	}
 	
-	public void drawFromWastePile() {
-    	Player currentPlayer = game.getCurrentPlayer();
-    	currentPlayer.setCardInHand(game.getWastePile().pop());
-    	setWasteCardView();
-    	cardInHand.setImage(CardImagesLoader.getImageFromCardName(currentPlayer.getCardInHand().toString()));
+	private void enableGameButtons() {
+		wastePileButton.setDisable(false);
+		deckButton.setDisable(false);			
 	}
 	
-	private void setWasteCardView() {
+	private void disableGameButtons() {
+		wastePileButton.setDisable(true);
+		deckButton.setDisable(true);
+	}
+
+	public void drawFromWastePile() {
+		disableGameButtons();
+    	Player currentPlayer = game.getCurrentPlayer();
+    	try {
+    		Card popped = game.getWastePile().pop();
+    		currentPlayer.setCardInHand(popped);
+    		setWastePileView();
+    		cardInHand.setImage(CardImagesLoader.getImageFromCardName(currentPlayer.getCardInHand().toString()));   		
+    	}
+    	catch (Exception e) {
+			Alert alert = new Alert(Alert.AlertType.WARNING);
+			alert.setTitle("Errore");
+			alert.setHeaderText("La pila di carte scartate è vuota!");
+			alert.setContentText("Per continuare a giocare pesca dal mazzo");
+			alert.showAndWait();
+    	}
+	}
+	
+	private void setWastePileView() {
 		try {
 			wastePile.setImage(CardImagesLoader.getImageFromCardName(game.getWastePile().peek().toString()));
 		}
 		catch (Exception e) {
 			wastePile.setImage(null);
-			userMessages.setText("La pila di carte scartate è vuota!\n Pesca dal mazzo");
+			wastePileButton.setDisable(true);
 		}
 	}
 

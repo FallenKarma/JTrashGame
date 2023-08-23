@@ -53,6 +53,14 @@ public class Game {
 		}
 	}
 	
+	public void playRound() {
+		Card currentPlayerCardInHand = getCurrentPlayer().getCardInHand();
+		while (currentPlayerCardInHand.getValue()>0) {
+			currentPlayerCardInHand = getCurrentPlayer().getCardInHand();
+			getCurrentPlayer().switchTableCard();
+		}
+	}
+	
 	public void NextRound() {
 		currentPlayer += 1;
 		roundWonCheck();

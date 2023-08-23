@@ -37,7 +37,7 @@
             <RowConstraints fillHeight="false" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
         </rowConstraints>
          <children>
-            <ImageView fx:id="deckImageView" fitHeight="90.0" onMouseClicked="#drawFromDeck" pickOnBounds="true" preserveRatio="true" rotate="90.0" GridPane.columnIndex="5" GridPane.halignment="CENTER" GridPane.rowIndex="4">
+            <ImageView fx:id="deckImageView" fitHeight="90.0" pickOnBounds="true" preserveRatio="true" rotate="90.0" GridPane.columnIndex="5" GridPane.halignment="CENTER" GridPane.rowIndex="4">
                <image>
                   <Image url="@../resources/carte/backOfCards.png" />
                </image>
@@ -65,15 +65,17 @@
             <ImageView fx:id="p1slot3" fitHeight="110.0" fitWidth="145.0" pickOnBounds="true" preserveRatio="true" rotate="90.0" GridPane.columnIndex="2" GridPane.rowIndex="4" />
             <ImageView fx:id="p1slot4" fitHeight="110.0" fitWidth="145.0" pickOnBounds="true" preserveRatio="true" rotate="90.0" GridPane.columnIndex="2" GridPane.rowIndex="5" />
             <ImageView fx:id="p1slot5" fitHeight="110.0" fitWidth="145.0" pickOnBounds="true" preserveRatio="true" rotate="90.0" GridPane.columnIndex="2" GridPane.rowIndex="6" />
-            <ImageView fx:id="wastePile" fitHeight="110.0" fitWidth="145.0" onMouseClicked="#drawFromWastePile" pickOnBounds="true" preserveRatio="true" rotate="90.0" GridPane.columnIndex="4" GridPane.rowIndex="4" />
+            <ImageView fx:id="wastePile" fitHeight="110.0" fitWidth="145.0" pickOnBounds="true" preserveRatio="true" rotate="90.0" GridPane.columnIndex="4" GridPane.rowIndex="4" />
             <ImageView fitHeight="110.0" fitWidth="145.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="3" GridPane.rowIndex="1" />
             <ImageView fitHeight="110.0" fitWidth="145.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="7" />
-            <ImageView fx:id="cardInHand" fitHeight="110.0" fitWidth="150.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="5" GridPane.rowIndex="6" />
+            <ImageView fx:id="cardInHand" fitHeight="90.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="5" GridPane.halignment="CENTER" GridPane.rowIndex="6" />
             <Label fx:id="userMessages" maxHeight="-Infinity" maxWidth="1.7976931348623157E308" prefHeight="100.0" prefWidth="260.0" textAlignment="CENTER" GridPane.columnIndex="4" GridPane.columnSpan="3" GridPane.halignment="CENTER" GridPane.rowIndex="5" GridPane.rowSpan="2" GridPane.valignment="TOP">
                <font>
                   <Font name="Comic Sans MS Bold" size="24.0" />
                </font>
             </Label>
+            <Button fx:id="wastePileButton" mnemonicParsing="false" onAction="#drawFromWastePile" opacity="0.0" prefHeight="102.0" prefWidth="150.0" GridPane.columnIndex="4" GridPane.rowIndex="4" />
+            <Button fx:id="deckButton" mnemonicParsing="false" onAction="#drawFromDeck" opacity="0.0" prefHeight="102.0" prefWidth="150.0" GridPane.columnIndex="5" GridPane.rowIndex="4" />
          </children>
       </GridPane>
    </children>
