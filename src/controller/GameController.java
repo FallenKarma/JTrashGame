@@ -1,25 +1,16 @@
 package controller;
 
-import java.io.File;
-import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.ResourceBundle;
-import java.util.Observable;
-import java.util.Observer;
 
-import javafx.animation.PauseTransition;
-import javafx.event.ActionEvent;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.util.Duration;
@@ -110,23 +101,22 @@ public class GameController implements Initializable {
 			assignCards (player,i);
 			i++;
 		}
-		start();
+		startRound();
 	}
 	
 	
-	private void start() {
+	private void startRound() {
 		drawPhase();
-		gamePhase();
-		endRoundPhase();
 	}
 
 	private void endRoundPhase() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	private void gamePhase() {
-		
+		if (game.roundWon()) {
+			//TO DO
+		}
+		else {
+			game.nextRound();
+			startRound();
+		}
 	}
 
 	private void drawPhase() {
@@ -136,6 +126,72 @@ public class GameController implements Initializable {
 		else {
 			drawFromDeck();
 		}
+	}
+	
+	private void gamePhase() {
+		Player currentPlayer = game.getCurrentPlayer();
+		Card card = currentPlayer.getCardInHand();
+		while (card.getValue()>0 && card.getValue()<11) {
+			final Card currentCard = card;
+			if (currentPlayer.switchTableCard()) {
+				Timeline timeline = new Timeline(
+						new KeyFrame(Duration.seconds(1), e->updateCardInHandView()),
+						new KeyFrame(Duration.seconds(1), e->updateSingleCardTableView(currentCard.getValue()-1))
+				);
+				timeline.play();
+			}
+			else {
+				playerDiscard();
+			}
+			card = currentPlayer.getCardInHand();
+			if (card == null) { 
+				endGamePhase();
+				return;
+			}
+		}
+		if (card.getValue()==0) {
+//			playerDiscard();
+		}
+		if (card.getValue()==11) {
+			//// TO IMPLEMENT //////
+//			playerDiscard();
+		}
+	}
+
+//	private void makeCardsClickable() {
+//		for (int i=0; i<10; i++) {
+//			this.imageViews.get(i).setOnMouseClicked(specialKingSwitch());
+//		}
+//	}
+//
+//
+//
+//	private EventHandler<? super MouseEvent> specialKingSwitch() {
+//		game.getCurrentPlayer().specialKingSwitch(position);
+//		updateViewAndWait();
+//		makeCardsNonClickable();
+//		gamePhase();
+//		return null;
+//	}
+//
+//	private void makeCardsNonClickable() {
+//		for (int i=0; i<10; i++) {
+//			this.imageViews.get(i).setOnMouseClicked(null);
+//		}
+//	}
+
+
+	private void endGamePhase() {
+		updateViewAndWait();
+		endRoundPhase();
+	}
+
+	public void playerDiscard() {
+		Card card = game.getCurrentPlayer().getCardInHand();
+		System.out.println("Card before discarding: " + card.toString());	
+		game.getWastePile().push(game.getCurrentPlayer().discard());
+		updateCardInHandView();
+		updatetWastePileView();
 	}
 
 	public void assignCards (Player player,int playerNumber) {
@@ -147,14 +203,6 @@ public class GameController implements Initializable {
 	}
 	
 	
-	public void drawFromDeck () {
-		Player currentPlayer = game.getCurrentPlayer();
-		currentPlayer.setCardInHand(game.getDeckOfCards().drawACard());
-    	if (!currentPlayer.isBot()) {
-    		disableGameButtons();
-    		cardInHand.setImage(CardImagesLoader.getImageFromCardName(currentPlayer.getCardInHand().toString()));
-    	}
-	}
 	
 	private void enableGameButtons() {
 		wastePileButton.setDisable(false);
@@ -166,34 +214,80 @@ public class GameController implements Initializable {
 		deckButton.setDisable(true);
 	}
 
+	public void drawFromDeck () {
+		Player currentPlayer = game.getCurrentPlayer();
+		currentPlayer.setCardInHand(game.getDeckOfCards().drawACard());
+		updateCardInHandView();
+		if (!currentPlayer.isBot()) {
+			disableGameButtons();
+		}
+		gamePhase();
+	}
+	
 	public void drawFromWastePile() {
 		disableGameButtons();
     	Player currentPlayer = game.getCurrentPlayer();
     	try {
     		Card popped = game.getWastePile().pop();
+    		System.out.println("Carta pescata: " + popped.toString());
     		currentPlayer.setCardInHand(popped);
-    		setWastePileView();
-    		cardInHand.setImage(CardImagesLoader.getImageFromCardName(currentPlayer.getCardInHand().toString()));   		
+    		updateCardInHandView();
+    		updatetWastePileView();
     	}
     	catch (Exception e) {
-			Alert alert = new Alert(Alert.AlertType.WARNING);
-			alert.setTitle("Errore");
-			alert.setHeaderText("La pila di carte scartate è vuota!");
-			alert.setContentText("Per continuare a giocare pesca dal mazzo");
-			alert.showAndWait();
+			e.printStackTrace();
     	}
+    	gamePhase();
 	}
 	
-	private void setWastePileView() {
+	private void updatetWastePileView() {
 		try {
 			wastePile.setImage(CardImagesLoader.getImageFromCardName(game.getWastePile().peek().toString()));
 		}
 		catch (Exception e) {
-			wastePile.setImage(null);
 			wastePileButton.setDisable(true);
 		}
 	}
 
+	public void updateViewAndWait() {
+			Timeline timeline = new Timeline(
+					new KeyFrame(Duration.seconds(1), e->updateCardInHandView()),
+					new KeyFrame(Duration.seconds(1), e->updateTableView())
+			);
+			timeline.play();
+	}
+	
+	private void updateSingleCardTableView(int position) {
+    	Card currentCard = game.getCurrentPlayer().getTableCards()[position];
+    	if (!currentCard.isFaceDown()) {
+			imageViews.get(position).setImage(CardImagesLoader.getImageFromCardName(currentCard.toString()));
+    	}
+	}
+
+	
+	
+	private void updateTableView() {
+    	Card currentCard = null;
+		for (int i=0; i < game.getCurrentPlayer().getTableCardsNumber(); i++) {
+			int position = game.getCurrentPlayerNumber() * cardSpotsPerPlayer + i;
+			currentCard = game.getCurrentPlayer().getTableCards()[i];
+			if (!currentCard.isFaceDown()) {
+	    			Card card = game.getCurrentPlayer().getTableCards()[i];
+	    			imageViews.get(position).setImage(CardImagesLoader.getImageFromCardName(card.toString()));
+			}
+		}
+	}
+
+	public void updateCardInHandView() {
+		Card cardInHandEntity = game.getCurrentPlayer().getCardInHand();
+		if (cardInHandEntity!=null) {
+			cardInHand.setImage(CardImagesLoader.getImageFromCardName(cardInHandEntity.toString()));
+			cardInHand.setVisible(true);
+		}
+		else {
+			cardInHand.setVisible(false);
+		}
+	}
 	
 	public void intializeImageViews () {
 		

@@ -57,18 +57,32 @@ public class Player extends User{
 	 * into his corresponding position and take the 
 	 * face down card in hand
 	 */
-	public void switchTableCard () {
+	public boolean switchTableCard () {
 		int position = cardInHand.getValue();
-		if (position<11 && this.tableCards[position].isFaceDown()) {
+		Card relativeTableCard = tableCards[position-1];
+		if (relativeTableCard.isFaceDown() && relativeTableCard.getValue()!=position) {
 			Card nextCardOnTheTable = this.cardInHand;
 			nextCardOnTheTable.setFaceUp();
-			cardInHand = this.tableCards[position];
-			this.tableCards[position] = nextCardOnTheTable;
+			cardInHand = relativeTableCard;
+			this.tableCards[position-1] = nextCardOnTheTable;
+			return true;
+		}
+		else {
+			relativeTableCard.setFaceUp();
+			return false;
 		}
 	}
 
+	public void specialKingSwitch(int position) {
+		Card relativeTableCard = tableCards[position];
+		tableCards[position] = cardInHand;
+		setCardInHand(relativeTableCard);
+	}
+	
 	public Card discard() {
-		return cardInHand;
+		Card temporary = cardInHand;
+		cardInHand = null;
+		return temporary;
 	}
 	
     public void setCardInHand(Card cardInHand) {

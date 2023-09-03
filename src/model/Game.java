@@ -53,30 +53,29 @@ public class Game {
 		}
 	}
 	
-	public void playRound() {
-		Card currentPlayerCardInHand = getCurrentPlayer().getCardInHand();
-		while (currentPlayerCardInHand.getValue()>0) {
-			currentPlayerCardInHand = getCurrentPlayer().getCardInHand();
-			getCurrentPlayer().switchTableCard();
-		}
-	}
 	
-	public void NextRound() {
-		currentPlayer += 1;
-		roundWonCheck();
+	public void nextRound() {
+		if (currentPlayer<numberOfPlayers-1)
+			currentPlayer += 1;
+		else
+			currentPlayer = 0;
 	}
 
 	public Player getCurrentPlayer() {
 		return players.get(currentPlayer);
 	}
 
+	public int getCurrentPlayerNumber() {
+		return currentPlayer;
+	}
 
-	private void roundWonCheck() {
+	public boolean roundWon() {
+		boolean roundWon = true;
 		for (Card card: getCurrentPlayer().getTableCards() ) {
 			if (card.isFaceDown()) 
-				return ;
+				roundWon = false;
 		}
-		gameOver = true;
+		return roundWon;
 		///
 		//IMPLEMENTARE FUNZIONE PER GAMEWONCHECK
 		//IMPLEMENTA FUNZIONE CHE MOSTRA MESSAGGIO DI VITTORIA O SCONFITTA

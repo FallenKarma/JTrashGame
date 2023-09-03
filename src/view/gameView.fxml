@@ -10,7 +10,7 @@
 
 <AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="1080.0" minWidth="1600.0" style="-fx-background-color: green;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.GameController">
    <children>
-      <GridPane fx:id="cardsPane" layoutX="55.0" layoutY="-8.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="1080.0" prefWidth="1600.0" AnchorPane.bottomAnchor="8.0" AnchorPane.leftAnchor="55.0" AnchorPane.rightAnchor="-55.0" AnchorPane.topAnchor="-8.0">
+      <GridPane fx:id="cardsPane" layoutX="50.0" layoutY="-8.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="1080.0" prefWidth="1600.0" AnchorPane.bottomAnchor="8.0" AnchorPane.leftAnchor="50.0" AnchorPane.rightAnchor="-50.0" AnchorPane.topAnchor="-8.0">
         <columnConstraints>
             <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
             <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
@@ -55,16 +55,16 @@
                <viewport>
                   <Rectangle2D />
                </viewport></ImageView>
-            <ImageView fx:id="p1slot6" fitHeight="110.0" fitWidth="145.0" pickOnBounds="true" preserveRatio="true" rotate="90.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-            <ImageView fx:id="p1slot7" fitHeight="110.0" fitWidth="145.0" pickOnBounds="true" preserveRatio="true" rotate="90.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-            <ImageView fx:id="p1slot8" fitHeight="110.0" fitWidth="145.0" pickOnBounds="true" preserveRatio="true" rotate="90.0" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-            <ImageView fx:id="p1slot9" fitHeight="110.0" fitWidth="145.0" pickOnBounds="true" preserveRatio="true" rotate="90.0" GridPane.columnIndex="1" GridPane.rowIndex="5" />
-            <ImageView fx:id="p1slot10" fitHeight="110.0" fitWidth="145.0" pickOnBounds="true" preserveRatio="true" rotate="90.0" GridPane.columnIndex="1" GridPane.rowIndex="6" />
-            <ImageView fx:id="p1slot1" fitHeight="110.0" fitWidth="145.0" pickOnBounds="true" preserveRatio="true" rotate="90.0" GridPane.columnIndex="2" GridPane.rowIndex="2" />
-            <ImageView fx:id="p1slot2" fitHeight="110.0" fitWidth="145.0" pickOnBounds="true" preserveRatio="true" rotate="90.0" GridPane.columnIndex="2" GridPane.rowIndex="3" />
-            <ImageView fx:id="p1slot3" fitHeight="110.0" fitWidth="145.0" pickOnBounds="true" preserveRatio="true" rotate="90.0" GridPane.columnIndex="2" GridPane.rowIndex="4" />
-            <ImageView fx:id="p1slot4" fitHeight="110.0" fitWidth="145.0" pickOnBounds="true" preserveRatio="true" rotate="90.0" GridPane.columnIndex="2" GridPane.rowIndex="5" />
-            <ImageView fx:id="p1slot5" fitHeight="110.0" fitWidth="145.0" pickOnBounds="true" preserveRatio="true" rotate="90.0" GridPane.columnIndex="2" GridPane.rowIndex="6" />
+            <ImageView fx:id="p1slot6" fitHeight="90.0" fitWidth="90.0" pickOnBounds="true" preserveRatio="true" rotate="90.0" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="2" />
+            <ImageView fx:id="p1slot7" fitHeight="90.0" fitWidth="90.0" pickOnBounds="true" preserveRatio="true" rotate="90.0" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="3" />
+            <ImageView fx:id="p1slot8" fitHeight="90.0" fitWidth="90.0" pickOnBounds="true" preserveRatio="true" rotate="90.0" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="4" />
+            <ImageView fx:id="p1slot9" fitHeight="90.0" fitWidth="90.0" pickOnBounds="true" preserveRatio="true" rotate="90.0" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="5" />
+            <ImageView fx:id="p1slot10" fitHeight="90.0" fitWidth="90.0" pickOnBounds="true" preserveRatio="true" rotate="90.0" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="6" />
+            <ImageView fx:id="p1slot1" fitHeight="90.0" fitWidth="90.0" pickOnBounds="true" preserveRatio="true" rotate="90.0" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="2" />
+            <ImageView fx:id="p1slot2" fitHeight="90.0" fitWidth="90.0" pickOnBounds="true" preserveRatio="true" rotate="90.0" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="3" />
+            <ImageView fx:id="p1slot3" fitHeight="90.0" fitWidth="90.0" pickOnBounds="true" preserveRatio="true" rotate="90.0" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="4" />
+            <ImageView fx:id="p1slot4" fitHeight="90.0" fitWidth="90.0" pickOnBounds="true" preserveRatio="true" rotate="90.0" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="5" />
+            <ImageView fx:id="p1slot5" fitHeight="90.0" fitWidth="90.0" pickOnBounds="true" preserveRatio="true" rotate="90.0" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="6" />
             <ImageView fx:id="wastePile" fitHeight="110.0" fitWidth="145.0" pickOnBounds="true" preserveRatio="true" rotate="90.0" GridPane.columnIndex="4" GridPane.rowIndex="4" />
             <ImageView fitHeight="110.0" fitWidth="145.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="3" GridPane.rowIndex="1" />
             <ImageView fitHeight="110.0" fitWidth="145.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="7" />
