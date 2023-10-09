@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import utilites.LoggerUtil;
+
 /**
  * @author admin
  *
@@ -60,7 +62,8 @@ public class Player extends User{
 	public boolean switchTableCard () {
 		int position = cardInHand.getValue();
 		Card relativeTableCard = tableCards[position-1];
-		if (relativeTableCard.isFaceDown() && relativeTableCard.getValue()!=position) {
+		if (relativeTableCard.isFaceDown() && relativeTableCard.getValue() != position) {
+			LoggerUtil.logInfo("The current player just switched a " + cardInHand.toString() + " with a " + relativeTableCard.toString());
 			Card nextCardOnTheTable = this.cardInHand;
 			nextCardOnTheTable.setFaceUp();
 			cardInHand = relativeTableCard;

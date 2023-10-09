@@ -6,6 +6,7 @@ import java.util.Observable;
 import java.util.Stack;
 
 import controller.GameController;
+import utilites.LoggerUtil;
 
 public class Game {
 	
@@ -53,8 +54,21 @@ public class Game {
 		}
 	}
 	
+	public void currentPlayerDrawsFromWastePile() {
+		LoggerUtil.logInfo("The current player just drew from the waste pile");
+		getCurrentPlayer().draw(wastePile.pop());
+	}
 	
-	public void nextRound() {
+	public void currentPlayerDrawsFromDeck() {
+		LoggerUtil.logInfo("The current player just drew from the deck");
+		getCurrentPlayer().draw(deckOfCards.drawACard());
+	}
+	
+	public void currentPlayerDiscards() {
+		wastePile.push(getCurrentPlayer().discard());
+	}
+	
+	public void nextPlayer() {
 		if (currentPlayer<numberOfPlayers-1)
 			currentPlayer += 1;
 		else

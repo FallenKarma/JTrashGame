@@ -4,11 +4,14 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.logging.Logger;
 
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.animation.TranslateTransition;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
@@ -18,6 +21,7 @@ import model.Card;
 import model.Game;
 import model.Player;
 import model.User;
+import utilites.CardImagesLoader;
 
 public class GameController implements Initializable {
 	
@@ -114,7 +118,7 @@ public class GameController implements Initializable {
 			//TO DO
 		}
 		else {
-			game.nextRound();
+			game.nextPlayer();
 			startRound();
 		}
 	}
@@ -132,16 +136,13 @@ public class GameController implements Initializable {
 		Player currentPlayer = game.getCurrentPlayer();
 		Card card = currentPlayer.getCardInHand();
 		while (card.getValue()>0 && card.getValue()<11) {
-			final Card currentCard = card;
-			if (currentPlayer.switchTableCard()) {
-				Timeline timeline = new Timeline(
-						new KeyFrame(Duration.seconds(1), e->updateCardInHandView()),
-						new KeyFrame(Duration.seconds(1), e->updateSingleCardTableView(currentCard.getValue()-1))
-				);
-				timeline.play();
+			final Card currentHandCard = card;
+			if (!currentPlayer.switchTableCard()) {
+				playerDiscard();
 			}
 			else {
-				playerDiscard();
+				updateSingleCardTableView(currentHandCard.getValue()-1);
+				updateCardInHandView();
 			}
 			card = currentPlayer.getCardInHand();
 			if (card == null) { 
@@ -150,7 +151,7 @@ public class GameController implements Initializable {
 			}
 		}
 		if (card.getValue()==0) {
-//			playerDiscard();
+			playerDiscard();
 		}
 		if (card.getValue()==11) {
 			//// TO IMPLEMENT //////
@@ -182,14 +183,12 @@ public class GameController implements Initializable {
 
 
 	private void endGamePhase() {
-		updateViewAndWait();
+		updateGameView();
 		endRoundPhase();
 	}
 
 	public void playerDiscard() {
-		Card card = game.getCurrentPlayer().getCardInHand();
-		System.out.println("Card before discarding: " + card.toString());	
-		game.getWastePile().push(game.getCurrentPlayer().discard());
+		game.currentPlayerDiscards();
 		updateCardInHandView();
 		updatetWastePileView();
 	}
@@ -215,53 +214,51 @@ public class GameController implements Initializable {
 	}
 
 	public void drawFromDeck () {
-		Player currentPlayer = game.getCurrentPlayer();
-		currentPlayer.setCardInHand(game.getDeckOfCards().drawACard());
+		game.currentPlayerDrawsFromDeck();
 		updateCardInHandView();
-		if (!currentPlayer.isBot()) {
-			disableGameButtons();
-		}
+		disableGameButtons();
 		gamePhase();
 	}
 	
 	public void drawFromWastePile() {
 		disableGameButtons();
-    	Player currentPlayer = game.getCurrentPlayer();
-    	try {
-    		Card popped = game.getWastePile().pop();
-    		System.out.println("Carta pescata: " + popped.toString());
-    		currentPlayer.setCardInHand(popped);
-    		updateCardInHandView();
-    		updatetWastePileView();
-    	}
-    	catch (Exception e) {
-			e.printStackTrace();
-    	}
+    	game.currentPlayerDrawsFromWastePile();
+		updateCardInHandView();
+		updatetWastePileView();
     	gamePhase();
 	}
 	
 	private void updatetWastePileView() {
-		try {
-			wastePile.setImage(CardImagesLoader.getImageFromCardName(game.getWastePile().peek().toString()));
-		}
-		catch (Exception e) {
-			wastePileButton.setDisable(true);
-		}
+		Timeline timeline = new Timeline(
+				new KeyFrame(Duration.seconds(1), e->{
+					try {
+						wastePile.setImage(CardImagesLoader.getImageFromCardName(game.getWastePile().peek().toString()));
+					}
+					catch (Exception exception) {
+						System.out.println("Errore: " + exception.getMessage());
+						wastePileButton.setDisable(true);
+					}
+				})
+		);
+		timeline.play();
 	}
 
-	public void updateViewAndWait() {
-			Timeline timeline = new Timeline(
-					new KeyFrame(Duration.seconds(1), e->updateCardInHandView()),
-					new KeyFrame(Duration.seconds(1), e->updateTableView())
-			);
-			timeline.play();
+	public void updateGameView() {
+			updateCardInHandView();
+			updateTableView();
+			updatetWastePileView();
 	}
 	
 	private void updateSingleCardTableView(int position) {
-    	Card currentCard = game.getCurrentPlayer().getTableCards()[position];
-    	if (!currentCard.isFaceDown()) {
-			imageViews.get(position).setImage(CardImagesLoader.getImageFromCardName(currentCard.toString()));
-    	}
+		Timeline timeline = new Timeline(
+				new KeyFrame(Duration.seconds(1), e->{
+					Card currentCard = game.getCurrentPlayer().getTableCards()[position];
+					if (!currentCard.isFaceDown()) {
+						imageViews.get(position).setImage(CardImagesLoader.getImageFromCardName(currentCard.toString()));
+					}
+				})
+		);
+		timeline.play();
 	}
 
 	
@@ -279,14 +276,33 @@ public class GameController implements Initializable {
 	}
 
 	public void updateCardInHandView() {
-		Card cardInHandEntity = game.getCurrentPlayer().getCardInHand();
-		if (cardInHandEntity!=null) {
-			cardInHand.setImage(CardImagesLoader.getImageFromCardName(cardInHandEntity.toString()));
-			cardInHand.setVisible(true);
-		}
-		else {
-			cardInHand.setVisible(false);
-		}
+		Timeline timeline = new Timeline(
+				new KeyFrame(Duration.seconds(1), e->{
+						Card cardInHandEntity = game.getCurrentPlayer().getCardInHand();
+						if (cardInHandEntity!=null) {
+							cardInHand.setImage(CardImagesLoader.getImageFromCardName(cardInHandEntity.toString()));
+							cardInHand.setVisible(true);
+						}
+						else {
+							cardInHand.setVisible(false);
+						}
+					}
+				)
+		);
+		timeline.play();
+	}
+	
+	
+	public void cardsSwitchAnimation (Node image,Integer imageViewPosition) {
+		
+		double xPosition = imageViews.get(imageViewPosition).getX();
+		double yPosition = imageViews.get(imageViewPosition).getY();
+		TranslateTransition translate= new TranslateTransition();
+		translate.setNode(image);
+		translate.setDuration(Duration.millis(1000));
+		translate.setByX(xPosition);
+		translate.setByY(yPosition);
+		translate.play();
 	}
 	
 	public void intializeImageViews () {
