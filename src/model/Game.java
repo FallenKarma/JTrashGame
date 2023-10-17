@@ -64,6 +64,7 @@ public class Game {
 		getCurrentPlayer().draw(deckOfCards.drawACard());
 	}
 	
+
 	public void currentPlayerDiscards() {
 		wastePile.push(getCurrentPlayer().discard());
 	}

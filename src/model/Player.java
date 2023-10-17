@@ -60,13 +60,15 @@ public class Player extends User{
 	 * face down card in hand
 	 */
 	public boolean switchTableCard () {
+		if (cardInHand.getValue()==0 || cardInHand.getValue()==11) 
+			return false;
 		int position = cardInHand.getValue();
 		Card relativeTableCard = tableCards[position-1];
 		if (relativeTableCard.isFaceDown() && relativeTableCard.getValue() != position) {
 			LoggerUtil.logInfo("The current player just switched a " + cardInHand.toString() + " with a " + relativeTableCard.toString());
 			Card nextCardOnTheTable = this.cardInHand;
 			nextCardOnTheTable.setFaceUp();
-			cardInHand = relativeTableCard;
+			this.cardInHand = relativeTableCard;
 			this.tableCards[position-1] = nextCardOnTheTable;
 			return true;
 		}

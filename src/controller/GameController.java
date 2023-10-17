@@ -22,6 +22,7 @@ import model.Game;
 import model.Player;
 import model.User;
 import utilites.CardImagesLoader;
+import java.lang.Math;
 
 public class GameController implements Initializable {
 	
@@ -135,27 +136,20 @@ public class GameController implements Initializable {
 	private void gamePhase() {
 		Player currentPlayer = game.getCurrentPlayer();
 		Card card = currentPlayer.getCardInHand();
-		while (card.getValue()>0 && card.getValue()<11) {
+		while (card!=null) {
 			final Card currentHandCard = card;
 			if (!currentPlayer.switchTableCard()) {
-				playerDiscard();
+				if (currentPlayer.getCardInHand().getValue()==11) {
+					///
+					/// IMPLEMENTARE KING 
+					///
+				}
+				else
+					playerDiscard();
 			}
-			else {
-				updateSingleCardTableView(currentHandCard.getValue()-1);
-				updateCardInHandView();
-			}
+			updateSingleCardTableView(currentHandCard.getValue()-1);
+			updateCardInHandView();
 			card = currentPlayer.getCardInHand();
-			if (card == null) { 
-				endGamePhase();
-				return;
-			}
-		}
-		if (card.getValue()==0) {
-			playerDiscard();
-		}
-		if (card.getValue()==11) {
-			//// TO IMPLEMENT //////
-//			playerDiscard();
 		}
 	}
 
@@ -221,6 +215,7 @@ public class GameController implements Initializable {
 	}
 	
 	public void drawFromWastePile() {
+//		cardsSwitchAnimation(wastePile, 5);
 		disableGameButtons();
     	game.currentPlayerDrawsFromWastePile();
 		updateCardInHandView();
@@ -250,15 +245,18 @@ public class GameController implements Initializable {
 	}
 	
 	private void updateSingleCardTableView(int position) {
-		Timeline timeline = new Timeline(
-				new KeyFrame(Duration.seconds(1), e->{
-					Card currentCard = game.getCurrentPlayer().getTableCards()[position];
-					if (!currentCard.isFaceDown()) {
-						imageViews.get(position).setImage(CardImagesLoader.getImageFromCardName(currentCard.toString()));
-					}
-				})
-		);
-		timeline.play();
+		if (position>=0) {
+			
+			Timeline timeline = new Timeline(
+					new KeyFrame(Duration.seconds(1), e->{
+						Card currentCard = game.getCurrentPlayer().getTableCards()[position];
+						if (!currentCard.isFaceDown()) {
+							imageViews.get(position).setImage(CardImagesLoader.getImageFromCardName(currentCard.toString()));
+						}
+					})
+					);
+			timeline.play();
+		}
 	}
 
 	
@@ -293,15 +291,12 @@ public class GameController implements Initializable {
 	}
 	
 	
-	public void cardsSwitchAnimation (Node image,Integer imageViewPosition) {
-		
-		double xPosition = imageViews.get(imageViewPosition).getX();
-		double yPosition = imageViews.get(imageViewPosition).getY();
-		TranslateTransition translate= new TranslateTransition();
-		translate.setNode(image);
-		translate.setDuration(Duration.millis(1000));
-		translate.setByX(xPosition);
-		translate.setByY(yPosition);
+	public void cardsSwitchAnimation (ImageView image,Integer imageViewPosition) {
+		double xPosition = imageViews.get(imageViewPosition).getBoundsInParent().getMinX();
+		double yPosition = imageViews.get(imageViewPosition).getBoundsInParent().getMinY();
+		TranslateTransition translate= new TranslateTransition(Duration.millis(1000), image);
+		translate.setToX( xPosition-image.getLayoutX() );
+		translate.setToY( yPosition-image.getLayoutY() );
 		translate.play();
 	}
 	
@@ -329,7 +324,6 @@ public class GameController implements Initializable {
 		imageViews.add(p1slot8);
 		imageViews.add(p1slot9);
 		imageViews.add(p1slot10);
-		
 		
 	}
 
