@@ -28,4 +28,12 @@ public class Card {
 		return faceDown;
 	}
 	
+	public boolean isKing () {
+		return getValue() == 11;
+	}
+	
+	public boolean isQueenOrJ () {
+		return getValue() == 0;
+	}
+	
 }

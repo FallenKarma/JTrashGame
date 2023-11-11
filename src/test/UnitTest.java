@@ -7,9 +7,11 @@ import org.junit.jupiter.api.Test;
 
 import model.Card;
 import model.DeckOfCards;
+import model.Game;
 import model.Player;
 import model.Rank;
 import model.Suits;
+import model.User;
 
 public class UnitTest {
 	
@@ -17,7 +19,7 @@ public class UnitTest {
 	void cardToString() {
 		Card card = new Card(Rank.ace, Suits.spades);
 		
-		assertEquals(card.toString(), "1_of_spades");
+		assertEquals(card.toString(), "ace_of_spades");
 	}
 	
 	@Test
@@ -30,7 +32,16 @@ public class UnitTest {
 		player.setTableCards(deck.drawCards(player.getTableCardsNumber()).toArray(player.getTableCards()));
 		player.switchTableCard();
 		
-		assertEquals(testCard, player.getTableCards()[4]);
+		assertEquals(testCard, player.getTableCards()[3]);
+	}
+	
+	@Test
+	void testPlayerDiscard() {
+		Player user =  new Player("gabry");
+		Card card = new Card(Rank.ace, Suits.clubs);
+		user.setCardInHand(card);
+		
+		assertEquals(user.discard(), card);
 	}
 	
 }

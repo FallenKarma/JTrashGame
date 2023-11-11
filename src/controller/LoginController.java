@@ -16,6 +16,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
 import model.User;
+import utilites.CardImagesLoader;
 
 public class LoginController implements Initializable{
 	

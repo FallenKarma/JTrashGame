@@ -5,7 +5,10 @@ import java.util.Collection;
 import java.util.Observable;
 import java.util.Stack;
 
+import org.junit.platform.suite.api.Suite;
+
 import controller.GameController;
+import utilites.LoggerUtil;
 
 public class Game {
 	
@@ -36,7 +39,8 @@ public class Game {
 		else {
 			this.deckOfCards = new DeckOfCards(2);
 		}
-		wastePile.add(this.deckOfCards.drawACard());
+		///////
+		wastePile.add(new Card(Rank.king, Suits.clubs));
 	}
 	
 	public void initalizePlayers (User user) {
@@ -53,22 +57,41 @@ public class Game {
 		}
 	}
 	
-	public void NextRound() {
-		currentPlayer += 1;
-		roundWonCheck();
+	public void currentPlayerDrawsFromWastePile() {
+		getCurrentPlayer().draw(wastePile.pop());
+	}
+	
+	public void currentPlayerDrawsFromDeck() {
+		getCurrentPlayer().draw(deckOfCards.drawACard());
+	}
+	
+
+	public void currentPlayerDiscards() {
+		wastePile.push(getCurrentPlayer().discard());
+	}
+	
+	public void nextPlayer() {
+		if (currentPlayer<numberOfPlayers-1)
+			currentPlayer += 1;
+		else
+			currentPlayer = 0;
 	}
 
 	public Player getCurrentPlayer() {
 		return players.get(currentPlayer);
 	}
 
+	public int getCurrentPlayerNumber() {
+		return currentPlayer;
+	}
 
-	private void roundWonCheck() {
+	public boolean roundWon() {
+		boolean roundWon = true;
 		for (Card card: getCurrentPlayer().getTableCards() ) {
 			if (card.isFaceDown()) 
-				return ;
+				roundWon = false;
 		}
-		gameOver = true;
+		return roundWon;
 		///
 		//IMPLEMENTARE FUNZIONE PER GAMEWONCHECK
 		//IMPLEMENTA FUNZIONE CHE MOSTRA MESSAGGIO DI VITTORIA O SCONFITTA

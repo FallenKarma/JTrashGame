@@ -1,21 +1,23 @@
 package controller;
 
-import java.io.File;
-import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.ResourceBundle;
-import java.util.Observable;
-import java.util.Observer;
+import java.util.concurrent.CountDownLatch;
+import java.util.logging.Logger;
 
-import javafx.animation.PauseTransition;
-import javafx.event.ActionEvent;
+import javafx.animation.Animation;
+import javafx.animation.KeyFrame;
+import javafx.animation.ParallelTransition;
+import javafx.animation.RotateTransition;
+import javafx.animation.Timeline;
+import javafx.animation.TranslateTransition;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -24,13 +26,26 @@ import javafx.util.Duration;
 import model.Card;
 import model.Game;
 import model.Player;
+import model.Rank;
+import model.Suits;
 import model.User;
+import utilites.CardImagesLoader;
+import utilites.LoggerUtil;
 
 public class GameController implements Initializable {
 	
 	private Game game;
+	private final Integer cardSpotsPerPlayer = 10;
+	private final Integer deckImageViewPosition = -1;
+	private final Integer cardInHandImageViewPosition = -2;
 	
 	List<ImageView> imageViews;
+	
+	
+	@FXML
+	Button wastePileButton;
+	@FXML
+	Button deckButton;
 	
 	
 	@FXML
@@ -41,6 +56,9 @@ public class GameController implements Initializable {
 	
 	@FXML
 	ImageView cardInHand;
+	
+	@FXML
+	ImageView deck;
 	
 	@FXML
 	Label userMessages;
@@ -94,50 +112,317 @@ public class GameController implements Initializable {
 		intializeImageViews();
 	}
 	
-	public void setUpGameView (Integer numberOfPlayers,User user) {
+	public void setUpGame (Integer numberOfPlayers,User user) {
 		game = new Game (numberOfPlayers,user );
 		int i = 0;
 		for (Player player: game.getPlayers() ) {
 			assignCards (player,i);
 			i++;
 		}
+		startRound();
 	}
 	
 	
+	private void startRound() {
+		drawPhase();
+	}
+
+	private void drawPhase() {
+		if (!game.getCurrentPlayer().isBot()) {
+			enableGameButtons();
+		}
+		else {
+			drawFromDeck();
+		}
+	}
+	
+	private void gamePhase() {
+		Player currentPlayer = game.getCurrentPlayer();
+		Card currentHandCard = currentPlayer.getCardInHand();
+		if (currentHandCard != null) {
+			//If the card in hand is not a figure, the player switches it
+			if (currentPlayer.canPlayHandCard()) {
+				updateSingleCardTableView(currentHandCard.getValue() - 1);
+				cardsSwitchAnimation(cardInHand, currentHandCard.getValue() - 1);
+				currentPlayer.switchTableCard();
+			}
+			// If it is a figure, if it's a king he can choose where to put it;
+			// otherwise he has to discard
+			else {
+				if (currentHandCard.isKing()) {
+					kingSpecialPlay();
+				}
+				else {
+					playerDiscard();
+					game.nextPlayer();
+				}
+			}
+		}
+	}
+	
+	private void kingSpecialPlay() {
+		makeCardsClickable();
+	}
+
+	private void endRoundPhase() {
+		if (game.roundWon()) {
+			//TO DO
+		}
+		else {
+			game.nextPlayer();
+			startRound();
+		}
+	}
+
+	
+
+	private void makeCardsClickable() {
+		for (int i = 0; i < imageViews.size(); i ++) {
+			this.imageViews.get(i).setOnMouseClicked( e-> {
+				ImageView clickedImageView = (ImageView) e.getSource();
+				specialKingSwitch ( imageViews.indexOf(clickedImageView) );
+			});
+		}
+	}
+
+
+
+	private void kingSwitchAnimation(ImageView clickedImageView, ImageView cardInHand) {
+		Double firstImageAngle = clickedImageView.getRotate();
+		Double secondImageAngle = cardInHand.getRotate();
+		
+		TranslateTransition translateFirstImage = getTranslateAnimation(clickedImageView, cardInHand);
+		TranslateTransition translateSecondImage = getTranslateAnimation(cardInHand, clickedImageView);
+		RotateTransition rotateFirstImage = getRotateAnimation(clickedImageView, cardInHand);
+		RotateTransition rotateSecondImage = getRotateAnimation(cardInHand, clickedImageView);
+		
+		ParallelTransition pt = new ParallelTransition();
+		pt.setDelay(Duration.millis(1000));
+		pt.getChildren().add(translateFirstImage);
+		pt.getChildren().add(translateSecondImage);
+		pt.getChildren().add(rotateFirstImage);
+		pt.getChildren().add(rotateSecondImage);
+		pt.setOnFinished(e -> {
+			switchImages(clickedImageView, cardInHand, firstImageAngle, secondImageAngle);
+			gamePhase();
+		});
+		pt.play();
+	}
+
+	private void specialKingSwitch(Integer clickedImagePosition) {
+		Card chosenCard = game.getCurrentPlayer().getTableCards()[clickedImagePosition];
+		if ( !chosenCard.isFaceDown() ) {
+			showInvalidCardChosenError();
+		}
+		else {
+			updateSingleCardTableView(clickedImagePosition);
+			game.getCurrentPlayer().specialKingSwitch(clickedImagePosition);
+			kingSwitchAnimation(getImageViewFromCardValue(clickedImagePosition), cardInHand);
+		}
+	}
+//
+//	private void makeCardsNonClickable() {
+//		for (int i=0; i<10; i++) {
+//			this.imageViews.get(i).setOnMouseClicked(null);
+//		}
+//	}
+
+
+	private void endGamePhase() {
+		updateGameView();
+		endRoundPhase();
+	}
+
+	public void playerDiscard() {
+		game.currentPlayerDiscards();
+		playerDiscardAnimation();
+	}
+
+
 	public void assignCards (Player player,int playerNumber) {
 		for (int i=0; i < player.getTableCardsNumber(); i++) {
-			int position = playerNumber * 10 + i;
+			int position = playerNumber * cardSpotsPerPlayer + i;
 			imageViews.get(position).setImage(CardImagesLoader.getBackOfCardImage());
 		}
 		wastePile.setImage(CardImagesLoader.getImageFromCardName(game.getWastePile().peek().toString()));
 	}
 	
 	
-	public void drawFromDeck () {
-		Player currentPlayer = game.getCurrentPlayer();
-		currentPlayer.setCardInHand(game.getDeckOfCards().drawACard());
-    	if (!currentPlayer.isBot()) {
-    		cardInHand.setImage(CardImagesLoader.getImageFromCardName(currentPlayer.getCardInHand().toString()));
-    	}
+	
+	private void enableGameButtons() {
+		wastePileButton.setDisable(false);
+		deckButton.setDisable(false);			
 	}
 	
-	public void drawFromWastePile() {
-    	Player currentPlayer = game.getCurrentPlayer();
-    	currentPlayer.setCardInHand(game.getWastePile().pop());
-    	setWasteCardView();
-    	cardInHand.setImage(CardImagesLoader.getImageFromCardName(currentPlayer.getCardInHand().toString()));
-	}
-	
-	private void setWasteCardView() {
-		try {
-			wastePile.setImage(CardImagesLoader.getImageFromCardName(game.getWastePile().peek().toString()));
-		}
-		catch (Exception e) {
-			wastePile.setImage(null);
-			userMessages.setText("La pila di carte scartate è vuota!\n Pesca dal mazzo");
-		}
+	private void disableGameButtons() {
+		wastePileButton.setDisable(true);
+		deckButton.setDisable(true);
 	}
 
+	public void drawFromDeck () {
+		game.currentPlayerDrawsFromDeck();
+		drawFromDeckAnimation();
+		gamePhase();
+	}
+	
+	private void drawFromDeckAnimation() {
+		cardInHand.setImage(CardImagesLoader.getImageFromCardName(game.getCurrentPlayer().getCardInHand().toString()));
+	}
+
+	private void resetDeckView() {
+		deck.setImage(CardImagesLoader.getBackOfCardImage());
+	}
+
+	public void drawFromWastePile() {
+		disableGameButtons();
+    	game.currentPlayerDrawsFromWastePile();
+    	drawFromWastePileAnimation();
+	}
+	
+
+	private void updatetWastePileView() {
+		if (game.getWastePile().isEmpty()) {
+			wastePile.setImage(null);
+		}
+		else
+			wastePile.setImage(CardImagesLoader.getImageFromCardName(game.getWastePile().peek().toString()));
+	}
+
+	public void updateGameView() {
+			updateCardInHandView();
+			updatetWastePileView();
+	}
+	
+	private void updateSingleCardTableView(int position) {
+		Card tableCard = game.getCurrentPlayer().getTableCards()[position];
+		getImageViewFromCardValue(position).setImage(CardImagesLoader.getImageFromCardName(tableCard.toString()));
+	}
+
+
+	public void updateCardInHandView() {
+		Card cardInHandEntity = game.getCurrentPlayer().getCardInHand();
+		if (cardInHandEntity != null) {
+			cardInHand.setImage(CardImagesLoader.getImageFromCardName(cardInHandEntity.toString()));
+		}
+		else 
+			cardInHand.setImage(null);
+	}
+	
+	private void drawFromWastePileAnimation() {
+		Double wastePileAngle = wastePile.getRotate();
+		Double cardInHandAngle = cardInHand.getRotate();
+		
+		RotateTransition rotateAnimation = getRotateAnimation(wastePile, cardInHand);
+		TranslateTransition translateAnimation = getTranslateAnimation(wastePile, cardInHand);
+		ParallelTransition pt = new ParallelTransition();
+		pt.getChildren().add(rotateAnimation);
+		pt.getChildren().add(translateAnimation);
+		pt.setOnFinished(e->{
+			switchImages(wastePile, cardInHand,wastePileAngle,cardInHandAngle);
+			gamePhase();
+		});
+		pt.play();
+
+	}
+	
+	private void playerDiscardAnimation() {
+		Double cardInHandAngle = cardInHand.getRotate();
+		Double wastePileAngle = wastePile.getRotate();
+		RotateTransition rotateAnimation = getRotateAnimation(cardInHand, wastePile);
+		TranslateTransition translateAnimation = getTranslateAnimation(cardInHand, wastePile);
+		ParallelTransition pt = new ParallelTransition();
+		pt.getChildren().add(rotateAnimation);
+		pt.getChildren().add(translateAnimation);
+		pt.setOnFinished(e->{
+			switchImages(wastePile, cardInHand,wastePileAngle, cardInHandAngle);
+			updateCardInHandView();
+			drawPhase();
+		});
+		pt.play();
+	}
+
+
+	public boolean imagesHaveDifferentAngles(ImageView firstImage, ImageView secondImage) {
+		return firstImage.getRotate() != secondImage.getRotate();
+	}
+	
+	
+	public void cardsSwitchAnimation (ImageView image,Integer imageViewPosition) {
+
+		ImageView destinationImage = getImageViewFromCardValue(imageViewPosition);
+		Double firstImageAngle = image.getRotate();
+		Double secondImageAngle = destinationImage.getRotate();
+		
+		TranslateTransition translateFirstImage = getTranslateAnimation(image, destinationImage);
+		TranslateTransition translateSecondImage = getTranslateAnimation(destinationImage, image);
+		RotateTransition rotateFirstImage = getRotateAnimation(image, destinationImage);
+		RotateTransition rotateSecondImage = getRotateAnimation(destinationImage, image);
+		
+		ParallelTransition pt = new ParallelTransition();
+		pt.setDelay(Duration.millis(1000));
+		pt.getChildren().add(translateFirstImage);
+		pt.getChildren().add(translateSecondImage);
+		pt.getChildren().add(rotateFirstImage);
+		pt.getChildren().add(rotateSecondImage);
+		pt.setOnFinished(e -> {
+			ImageView destImage = getImageViewFromCardValue(imageViewPosition);
+			switchImages(image, destImage, firstImageAngle, secondImageAngle);
+			gamePhase();
+		});
+		pt.play();
+	}
+	
+	public TranslateTransition getTranslateAnimation(ImageView movingImage, ImageView destinationImage) {
+		double startX = destinationImage.getBoundsInParent().getCenterX();
+		double startY = destinationImage.getBoundsInParent().getCenterY();
+		double destinationX = movingImage.getBoundsInParent().getCenterX();
+		double destinationY = movingImage.getBoundsInParent().getCenterY();
+		TranslateTransition translate = new TranslateTransition(Duration.millis(1000), movingImage);
+		translate.setByX( startX - destinationX );
+		translate.setByY( startY - destinationY );
+		return translate;
+	}
+	
+	
+	private void switchImages(ImageView image, ImageView destinationImage, Double firstImageAngle, Double secondImageAngle) {
+		Image temporary = image.getImage();
+		
+		image.setTranslateX(0);
+		image.setTranslateY(0);
+		image.setRotate(firstImageAngle);
+		image.setImage(destinationImage.getImage());
+		
+		destinationImage.setTranslateX(0);
+		destinationImage.setTranslateY(0);
+		destinationImage.setRotate(secondImageAngle);
+		destinationImage.setImage(temporary);
+		
+	}
+
+	
+	public RotateTransition getRotateAnimation(ImageView movingImage, ImageView destinationImage) {
+		RotateTransition rotate = new RotateTransition(Duration.millis(1000), movingImage);
+		rotate.setToAngle(destinationImage.getRotate());
+		return rotate;
+	}
+	
+	public ImageView getImageViewFromCardValue (Integer cardValue) {
+		if (cardValue.equals(deckImageViewPosition)) 
+			return deck;
+		if (cardValue.equals(cardInHandImageViewPosition)) {
+			return cardInHand;
+		}
+		int position = game.getCurrentPlayerNumber() * cardSpotsPerPlayer + cardValue;
+		return imageViews.get(position);
+	}
+	
+	public void showInvalidCardChosenError() {
+		Alert alert = new Alert(Alert.AlertType.WARNING);
+		alert.setTitle("Errore");
+		alert.setHeaderText("La carta che hai selezionato non è valido!");
+		alert.setContentText("Scegli una carta che non sia scoperta!");
+		alert.showAndWait();
+	}
 	
 	public void intializeImageViews () {
 		
@@ -163,7 +448,6 @@ public class GameController implements Initializable {
 		imageViews.add(p1slot8);
 		imageViews.add(p1slot9);
 		imageViews.add(p1slot10);
-		
 		
 	}
 

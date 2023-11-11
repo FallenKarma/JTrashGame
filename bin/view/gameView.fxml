@@ -8,21 +8,19 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="1080.0" minWidth="1600.0" style="-fx-background-color: green;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.GameController">
+<AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" style="-fx-background-color: green;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.GameController">
    <children>
-      <GridPane fx:id="cardsPane" layoutX="55.0" layoutY="-8.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="1080.0" prefWidth="1600.0" AnchorPane.bottomAnchor="8.0" AnchorPane.leftAnchor="55.0" AnchorPane.rightAnchor="-55.0" AnchorPane.topAnchor="-8.0">
+      <GridPane fx:id="cardsPane" minHeight="-Infinity" minWidth="-Infinity" prefHeight="1080.0" prefWidth="1600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <columnConstraints>
-            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="-Infinity" prefWidth="50.0" />
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="-Infinity" prefWidth="50.0" />
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="50.0" />
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="-Infinity" prefWidth="50.0" />
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="-Infinity" prefWidth="50.0" />
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="-Infinity" prefWidth="50.0" />
           <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="50.0" />
-            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="50.0" />
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="50.0" />
         </columnConstraints>
         <rowConstraints>
             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
@@ -32,48 +30,49 @@
           <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
           <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-            <RowConstraints fillHeight="false" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-            <RowConstraints fillHeight="false" maxHeight="-Infinity" minHeight="5.0" prefHeight="30.0" vgrow="SOMETIMES" />
-            <RowConstraints fillHeight="false" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints fillHeight="false" minHeight="-Infinity" prefHeight="50.0" vgrow="SOMETIMES" />
+            <RowConstraints fillHeight="false" minHeight="-Infinity" prefHeight="50.0" vgrow="SOMETIMES" />
         </rowConstraints>
          <children>
-            <ImageView fx:id="deckImageView" fitHeight="90.0" onMouseClicked="#drawFromDeck" pickOnBounds="true" preserveRatio="true" rotate="90.0" GridPane.columnIndex="5" GridPane.halignment="CENTER" GridPane.rowIndex="4">
+            <ImageView fx:id="deckImageView" fitHeight="90.0" pickOnBounds="true" preserveRatio="true" rotate="90.0" GridPane.columnIndex="4" GridPane.halignment="CENTER" GridPane.rowIndex="4">
                <image>
                   <Image url="@../resources/carte/backOfCards.png" />
                </image>
             </ImageView>
-            <ImageView fx:id="userSlot6" fitHeight="90.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.rowIndex="9" GridPane.valignment="BOTTOM" />
-            <ImageView fx:id="userSlot10" fitHeight="90.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="7" GridPane.halignment="CENTER" GridPane.hgrow="SOMETIMES" GridPane.rowIndex="9" GridPane.valignment="BOTTOM" GridPane.vgrow="SOMETIMES" />
-            <ImageView fx:id="userSlot9" fitHeight="90.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="6" GridPane.halignment="CENTER" GridPane.rowIndex="9" GridPane.valignment="BOTTOM" />
-            <ImageView fx:id="userSlot5" fitHeight="90.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="7" GridPane.halignment="CENTER" GridPane.rowIndex="7" />
-            <ImageView fx:id="userSlot3" fitHeight="90.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="5" GridPane.halignment="CENTER" GridPane.rowIndex="7" />
-            <ImageView fx:id="userSlot7" fitHeight="90.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="4" GridPane.halignment="CENTER" GridPane.rowIndex="9" GridPane.valignment="BOTTOM" />
-            <ImageView fx:id="userSlot8" fitHeight="90.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="5" GridPane.halignment="CENTER" GridPane.rowIndex="9" GridPane.valignment="BOTTOM" />
-            <ImageView fx:id="userSlot2" fitHeight="90.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="4" GridPane.halignment="CENTER" GridPane.rowIndex="7" />
-            <ImageView fx:id="userSlot4" fitHeight="90.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="6" GridPane.halignment="CENTER" GridPane.rowIndex="7" />
-            <ImageView fx:id="userSlot1" fitHeight="90.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.rowIndex="7">
+            <ImageView fx:id="userSlot6" fitHeight="90.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="8" GridPane.valignment="BOTTOM" />
+            <ImageView fx:id="userSlot10" fitHeight="90.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="6" GridPane.halignment="CENTER" GridPane.hgrow="SOMETIMES" GridPane.rowIndex="8" GridPane.valignment="BOTTOM" GridPane.vgrow="SOMETIMES" />
+            <ImageView fx:id="userSlot9" fitHeight="90.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="5" GridPane.halignment="CENTER" GridPane.rowIndex="8" GridPane.valignment="BOTTOM" />
+            <ImageView fx:id="userSlot5" fitHeight="90.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="6" GridPane.halignment="CENTER" GridPane.rowIndex="7" />
+            <ImageView fx:id="userSlot3" fitHeight="90.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="4" GridPane.halignment="CENTER" GridPane.rowIndex="7" />
+            <ImageView fx:id="userSlot7" fitHeight="90.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.rowIndex="8" GridPane.valignment="BOTTOM" />
+            <ImageView fx:id="userSlot8" fitHeight="90.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="4" GridPane.halignment="CENTER" GridPane.rowIndex="8" GridPane.valignment="BOTTOM" />
+            <ImageView fx:id="userSlot2" fitHeight="90.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.rowIndex="7" />
+            <ImageView fx:id="userSlot4" fitHeight="90.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="5" GridPane.halignment="CENTER" GridPane.rowIndex="7" />
+            <ImageView fx:id="userSlot1" fitHeight="90.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="7">
                <viewport>
                   <Rectangle2D />
                </viewport></ImageView>
-            <ImageView fx:id="p1slot6" fitHeight="110.0" fitWidth="145.0" pickOnBounds="true" preserveRatio="true" rotate="90.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-            <ImageView fx:id="p1slot7" fitHeight="110.0" fitWidth="145.0" pickOnBounds="true" preserveRatio="true" rotate="90.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-            <ImageView fx:id="p1slot8" fitHeight="110.0" fitWidth="145.0" pickOnBounds="true" preserveRatio="true" rotate="90.0" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-            <ImageView fx:id="p1slot9" fitHeight="110.0" fitWidth="145.0" pickOnBounds="true" preserveRatio="true" rotate="90.0" GridPane.columnIndex="1" GridPane.rowIndex="5" />
-            <ImageView fx:id="p1slot10" fitHeight="110.0" fitWidth="145.0" pickOnBounds="true" preserveRatio="true" rotate="90.0" GridPane.columnIndex="1" GridPane.rowIndex="6" />
-            <ImageView fx:id="p1slot1" fitHeight="110.0" fitWidth="145.0" pickOnBounds="true" preserveRatio="true" rotate="90.0" GridPane.columnIndex="2" GridPane.rowIndex="2" />
-            <ImageView fx:id="p1slot2" fitHeight="110.0" fitWidth="145.0" pickOnBounds="true" preserveRatio="true" rotate="90.0" GridPane.columnIndex="2" GridPane.rowIndex="3" />
-            <ImageView fx:id="p1slot3" fitHeight="110.0" fitWidth="145.0" pickOnBounds="true" preserveRatio="true" rotate="90.0" GridPane.columnIndex="2" GridPane.rowIndex="4" />
-            <ImageView fx:id="p1slot4" fitHeight="110.0" fitWidth="145.0" pickOnBounds="true" preserveRatio="true" rotate="90.0" GridPane.columnIndex="2" GridPane.rowIndex="5" />
-            <ImageView fx:id="p1slot5" fitHeight="110.0" fitWidth="145.0" pickOnBounds="true" preserveRatio="true" rotate="90.0" GridPane.columnIndex="2" GridPane.rowIndex="6" />
-            <ImageView fx:id="wastePile" fitHeight="110.0" fitWidth="145.0" onMouseClicked="#drawFromWastePile" pickOnBounds="true" preserveRatio="true" rotate="90.0" GridPane.columnIndex="4" GridPane.rowIndex="4" />
-            <ImageView fitHeight="110.0" fitWidth="145.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="3" GridPane.rowIndex="1" />
-            <ImageView fitHeight="110.0" fitWidth="145.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="7" />
-            <ImageView fx:id="cardInHand" fitHeight="110.0" fitWidth="150.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="5" GridPane.rowIndex="6" />
-            <Label fx:id="userMessages" maxHeight="-Infinity" maxWidth="1.7976931348623157E308" prefHeight="100.0" prefWidth="260.0" textAlignment="CENTER" GridPane.columnIndex="4" GridPane.columnSpan="3" GridPane.halignment="CENTER" GridPane.rowIndex="5" GridPane.rowSpan="2" GridPane.valignment="TOP">
+            <ImageView fx:id="p1slot6" fitHeight="90.0" fitWidth="90.0" pickOnBounds="true" preserveRatio="true" rotate="90.0" GridPane.halignment="CENTER" GridPane.rowIndex="2" />
+            <ImageView fx:id="p1slot7" fitHeight="90.0" fitWidth="90.0" pickOnBounds="true" preserveRatio="true" rotate="90.0" GridPane.halignment="CENTER" GridPane.rowIndex="3" />
+            <ImageView fx:id="p1slot8" fitHeight="90.0" fitWidth="90.0" pickOnBounds="true" preserveRatio="true" rotate="90.0" GridPane.halignment="CENTER" GridPane.rowIndex="4" />
+            <ImageView fx:id="p1slot9" fitHeight="90.0" fitWidth="90.0" pickOnBounds="true" preserveRatio="true" rotate="90.0" GridPane.halignment="CENTER" GridPane.rowIndex="5" />
+            <ImageView fx:id="p1slot10" fitHeight="90.0" fitWidth="90.0" pickOnBounds="true" preserveRatio="true" rotate="90.0" GridPane.halignment="CENTER" GridPane.rowIndex="6" />
+            <ImageView fx:id="p1slot1" fitHeight="90.0" fitWidth="90.0" pickOnBounds="true" preserveRatio="true" rotate="90.0" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="2" />
+            <ImageView fx:id="p1slot2" fitHeight="90.0" fitWidth="90.0" pickOnBounds="true" preserveRatio="true" rotate="90.0" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="3" />
+            <ImageView fx:id="p1slot3" fitHeight="90.0" fitWidth="90.0" pickOnBounds="true" preserveRatio="true" rotate="90.0" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="4" />
+            <ImageView fx:id="p1slot4" fitHeight="90.0" fitWidth="90.0" pickOnBounds="true" preserveRatio="true" rotate="90.0" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="5" />
+            <ImageView fx:id="p1slot5" fitHeight="90.0" fitWidth="90.0" pickOnBounds="true" preserveRatio="true" rotate="90.0" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="6" />
+            <ImageView fx:id="wastePile" fitHeight="90.0" fitWidth="90.0" pickOnBounds="true" preserveRatio="true" rotate="90.0" GridPane.columnIndex="3" GridPane.rowIndex="4" />
+            <ImageView fitHeight="110.0" fitWidth="145.0" pickOnBounds="true" preserveRatio="true" />
+            <ImageView fitHeight="110.0" fitWidth="145.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="6" />
+            <ImageView fx:id="cardInHand" fitHeight="90.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="4" GridPane.halignment="CENTER" GridPane.rowIndex="6" />
+            <Label fx:id="userMessages" maxHeight="-Infinity" maxWidth="1.7976931348623157E308" prefHeight="100.0" prefWidth="260.0" textAlignment="CENTER" GridPane.columnIndex="3" GridPane.columnSpan="3" GridPane.halignment="CENTER" GridPane.rowIndex="5" GridPane.rowSpan="2" GridPane.valignment="TOP">
                <font>
                   <Font name="Comic Sans MS Bold" size="24.0" />
                </font>
             </Label>
+            <Button fx:id="wastePileButton" mnemonicParsing="false" onAction="#drawFromWastePile" opacity="0.0" prefHeight="102.0" prefWidth="150.0" GridPane.columnIndex="3" GridPane.rowIndex="4" />
+            <Button fx:id="deckButton" mnemonicParsing="false" onAction="#drawFromDeck" opacity="0.0" prefHeight="102.0" prefWidth="150.0" GridPane.columnIndex="4" GridPane.rowIndex="4" />
          </children>
       </GridPane>
    </children>

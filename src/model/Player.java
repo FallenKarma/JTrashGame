@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import utilites.LoggerUtil;
+
 /**
  * @author admin
  *
@@ -39,6 +41,7 @@ public class Player extends User{
 	}
 
 	public Card draw(Card cardInHand) {
+		LoggerUtil.logInfo("The current player draws a : " + cardInHand.toString());
 		this.cardInHand = cardInHand;
 		return cardInHand;
 	}
@@ -51,24 +54,45 @@ public class Player extends User{
 	}
 
 
-
+	public boolean canPlayHandCard() {
+		int position = cardInHand.getValue();
+		if (position == 0 || cardInHand.isKing() || !tableCards[position-1].isFaceDown())
+			return false;	
+		else {
+			tableCards[position-1].setFaceUp();
+			return true;
+		}
+	}
+	
+	
 	/**
 	 * This method places the player's card in hand
 	 * into his corresponding position and take the 
 	 * face down card in hand
 	 */
-	public void switchTableCard () {
+	public boolean switchTableCard () {
 		int position = cardInHand.getValue();
-		if (position<11 && this.tableCards[position].isFaceDown()) {
-			Card nextCardOnTheTable = this.cardInHand;
-			nextCardOnTheTable.setFaceUp();
-			cardInHand = this.tableCards[position];
-			this.tableCards[position] = nextCardOnTheTable;
-		}
+		Card relativeTableCard = tableCards[position-1];
+		LoggerUtil.logInfo("The current player just switched a " + cardInHand.toString() + " with a " + relativeTableCard.toString());
+		Card nextCardOnTheTable = this.cardInHand;
+		nextCardOnTheTable.setFaceUp();
+		this.cardInHand = relativeTableCard;
+		this.tableCards[position-1] = nextCardOnTheTable;
+		return true;
 	}
 
+	public void specialKingSwitch(int position) {
+		cardInHand.setFaceUp();
+		Card relativeTableCard = tableCards[position];
+		tableCards[position] = cardInHand;
+		setCardInHand(relativeTableCard);
+	}
+	
 	public Card discard() {
-		return cardInHand;
+		LoggerUtil.logInfo("The current player just discarded a " + cardInHand.toString());
+		Card temporary = cardInHand;
+		cardInHand = null;
+		return temporary;
 	}
 	
     public void setCardInHand(Card cardInHand) {
