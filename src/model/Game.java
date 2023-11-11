@@ -5,6 +5,8 @@ import java.util.Collection;
 import java.util.Observable;
 import java.util.Stack;
 
+import org.junit.platform.suite.api.Suite;
+
 import controller.GameController;
 import utilites.LoggerUtil;
 
@@ -37,7 +39,8 @@ public class Game {
 		else {
 			this.deckOfCards = new DeckOfCards(2);
 		}
-		wastePile.add(this.deckOfCards.drawACard());
+		///////
+		wastePile.add(new Card(Rank.king, Suits.clubs));
 	}
 	
 	public void initalizePlayers (User user) {
@@ -55,12 +58,10 @@ public class Game {
 	}
 	
 	public void currentPlayerDrawsFromWastePile() {
-		LoggerUtil.logInfo("The current player just drew from the waste pile");
 		getCurrentPlayer().draw(wastePile.pop());
 	}
 	
 	public void currentPlayerDrawsFromDeck() {
-		LoggerUtil.logInfo("The current player just drew from the deck");
 		getCurrentPlayer().draw(deckOfCards.drawACard());
 	}
 	

@@ -41,6 +41,7 @@ public class Player extends User{
 	}
 
 	public Card draw(Card cardInHand) {
+		LoggerUtil.logInfo("The current player draws a : " + cardInHand.toString());
 		this.cardInHand = cardInHand;
 		return cardInHand;
 	}
@@ -53,38 +54,42 @@ public class Player extends User{
 	}
 
 
-
+	public boolean canPlayHandCard() {
+		int position = cardInHand.getValue();
+		if (position == 0 || cardInHand.isKing() || !tableCards[position-1].isFaceDown())
+			return false;	
+		else {
+			tableCards[position-1].setFaceUp();
+			return true;
+		}
+	}
+	
+	
 	/**
 	 * This method places the player's card in hand
 	 * into his corresponding position and take the 
 	 * face down card in hand
 	 */
 	public boolean switchTableCard () {
-		if (cardInHand.getValue()==0 || cardInHand.getValue()==11) 
-			return false;
 		int position = cardInHand.getValue();
 		Card relativeTableCard = tableCards[position-1];
-		if (relativeTableCard.isFaceDown() && relativeTableCard.getValue() != position) {
-			LoggerUtil.logInfo("The current player just switched a " + cardInHand.toString() + " with a " + relativeTableCard.toString());
-			Card nextCardOnTheTable = this.cardInHand;
-			nextCardOnTheTable.setFaceUp();
-			this.cardInHand = relativeTableCard;
-			this.tableCards[position-1] = nextCardOnTheTable;
-			return true;
-		}
-		else {
-			relativeTableCard.setFaceUp();
-			return false;
-		}
+		LoggerUtil.logInfo("The current player just switched a " + cardInHand.toString() + " with a " + relativeTableCard.toString());
+		Card nextCardOnTheTable = this.cardInHand;
+		nextCardOnTheTable.setFaceUp();
+		this.cardInHand = relativeTableCard;
+		this.tableCards[position-1] = nextCardOnTheTable;
+		return true;
 	}
 
 	public void specialKingSwitch(int position) {
+		cardInHand.setFaceUp();
 		Card relativeTableCard = tableCards[position];
 		tableCards[position] = cardInHand;
 		setCardInHand(relativeTableCard);
 	}
 	
 	public Card discard() {
+		LoggerUtil.logInfo("The current player just discarded a " + cardInHand.toString());
 		Card temporary = cardInHand;
 		cardInHand = null;
 		return temporary;
