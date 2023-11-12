@@ -8,6 +8,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.logging.Logger;
 
 import javafx.animation.Animation;
+import javafx.animation.FadeTransition;
 import javafx.animation.KeyFrame;
 import javafx.animation.ParallelTransition;
 import javafx.animation.RotateTransition;
@@ -39,6 +40,10 @@ public class GameController implements Initializable {
 	private final Integer deckImageViewPosition = -1;
 	private final Integer cardInHandImageViewPosition = -2;
 	
+	private static String userTurnOverMessage = "YOUR TURN IS OVER";
+	private static String userPlayerTurnMessage = "NOW IS YOUR TURN";
+	private static String nextPlayerTurnMessage = "NEXT PLAYER TURN";
+	
 	List<ImageView> imageViews;
 	
 	
@@ -58,7 +63,9 @@ public class GameController implements Initializable {
 	ImageView cardInHand;
 	
 	@FXML
-	ImageView deck;
+	ImageView movingDeckImage;
+
+
 	
 	@FXML
 	Label userMessages;
@@ -154,10 +161,15 @@ public class GameController implements Initializable {
 				}
 				else {
 					playerDiscard();
-					game.nextPlayer();
+					nextTurn();
 				}
 			}
 		}
+	}
+	
+	private void nextTurn() {
+		showChangeOfTurnTransition();
+		game.nextPlayer();
 	}
 	
 	private void kingSpecialPlay() {
@@ -262,16 +274,29 @@ public class GameController implements Initializable {
 	public void drawFromDeck () {
 		game.currentPlayerDrawsFromDeck();
 		drawFromDeckAnimation();
-		gamePhase();
 	}
 	
 	private void drawFromDeckAnimation() {
-		cardInHand.setImage(CardImagesLoader.getImageFromCardName(game.getCurrentPlayer().getCardInHand().toString()));
+		
+		movingDeckImage.setImage(CardImagesLoader.getImageFromCardName(game.getCurrentPlayer().getCardInHand().toString()));
+		
+		Double deckImageAngle = movingDeckImage.getRotate();
+		Double cardInHandAngle = cardInHand.getRotate();
+		
+		TranslateTransition translateAnimation = getTranslateAnimation(movingDeckImage, cardInHand);
+		RotateTransition rotateTransition = getRotateAnimation(movingDeckImage, cardInHand);
+		ParallelTransition pt = new ParallelTransition();
+		pt.getChildren().add(translateAnimation);
+		pt.getChildren().add(rotateTransition);
+		pt.setOnFinished(e->{
+			switchImages(movingDeckImage, cardInHand,deckImageAngle,cardInHandAngle);
+			movingDeckImage.setImage(null);
+			gamePhase();
+		});
+		pt.play();
+
 	}
 
-	private void resetDeckView() {
-		deck.setImage(CardImagesLoader.getBackOfCardImage());
-	}
 
 	public void drawFromWastePile() {
 		disableGameButtons();
@@ -336,16 +361,9 @@ public class GameController implements Initializable {
 		pt.setOnFinished(e->{
 			switchImages(wastePile, cardInHand,wastePileAngle, cardInHandAngle);
 			updateCardInHandView();
-			drawPhase();
 		});
 		pt.play();
 	}
-
-
-	public boolean imagesHaveDifferentAngles(ImageView firstImage, ImageView secondImage) {
-		return firstImage.getRotate() != secondImage.getRotate();
-	}
-	
 	
 	public void cardsSwitchAnimation (ImageView image,Integer imageViewPosition) {
 
@@ -408,7 +426,7 @@ public class GameController implements Initializable {
 	
 	public ImageView getImageViewFromCardValue (Integer cardValue) {
 		if (cardValue.equals(deckImageViewPosition)) 
-			return deck;
+			return movingDeckImage;
 		if (cardValue.equals(cardInHandImageViewPosition)) {
 			return cardInHand;
 		}
@@ -422,6 +440,29 @@ public class GameController implements Initializable {
 		alert.setHeaderText("La carta che hai selezionato non è valido!");
 		alert.setContentText("Scegli una carta che non sia scoperta!");
 		alert.showAndWait();
+	}
+	
+	public void showChangeOfTurnTransition () {
+		if ( !game.getCurrentPlayer().isBot()) {
+			userMessages.setText(userTurnOverMessage);
+		}
+        FadeTransition fadeTransition = new FadeTransition(Duration.seconds(2), userMessages);
+        fadeTransition.setFromValue(0.0); // Fully visible
+        fadeTransition.setToValue(1.0); 
+        fadeTransition.setOnFinished(e -> {
+        	 userMessagesFadeOutTransition();
+        });
+        fadeTransition.play();
+        
+	}
+	public void userMessagesFadeOutTransition() {
+        FadeTransition fadeTransition = new FadeTransition(Duration.seconds(2), userMessages);
+        fadeTransition.setFromValue(1.0); 
+        fadeTransition.setToValue(0.0); 
+        fadeTransition.setOnFinished(e -> {
+        	 drawPhase();
+        });
+        fadeTransition.play();
 	}
 	
 	public void intializeImageViews () {
