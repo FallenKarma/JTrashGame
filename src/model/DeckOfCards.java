@@ -10,9 +10,11 @@ public class DeckOfCards {
     
 	public DeckOfCards (Integer numberOfDecks) {
 		this.deck = new ArrayList<>();
-		for (Rank rank:Rank.values()) {
-			for (Suits suit: Suits.values()) {
-				deck.add(new Card(rank,suit));
+		for (int i=0; i < numberOfDecks; i++) {
+			for (Rank rank:Rank.values()) {
+				for (Suits suit: Suits.values()) {
+					deck.add(new Card(rank,suit));
+				}
 			}
 		}
 		shuffle();

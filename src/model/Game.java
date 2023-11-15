@@ -2,15 +2,13 @@ package model;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Observable;
 import java.util.Stack;
 
-import org.junit.platform.suite.api.Suite;
 
-import controller.GameController;
-import utilites.LoggerUtil;
 
 public class Game {
+	
+	private static Game game = null;
 	
 	private ArrayList<Player> players;
 	private Integer numberOfPlayers;
@@ -19,20 +17,31 @@ public class Game {
 	private Boolean gameOver;
 	private int currentPlayer;
 	
-	public Game (Integer numberOfPlayers,User user) {
+	public static Game createGame (Integer numberOfPlayers,User user) {
+		if (game==null) {
+			game = new Game(numberOfPlayers, user);
+		}
+		return game;
+	}
+	
+	public static Game getInstance () {
+		return game;
+	}
+	
+	private Game (Integer numberOfPlayers,User user) {
 		this.numberOfPlayers = numberOfPlayers;
-		this.players = new ArrayList<Player>();
+		this.players = new ArrayList<>();
 		this.wastePile = new Stack<>();
 		this.gameOver = false;
 		initializeGame(user);
 	}
 	
 	public void initializeGame(User user) {
-		initializeDeck(numberOfPlayers);
+		initializeDeckAndDiscardPile(numberOfPlayers);
 		initalizePlayers(user);
 		assignCards();
 	}
-	public void initializeDeck (Integer numberOfPlayers) {
+	public void initializeDeckAndDiscardPile (Integer numberOfPlayers) {
 		if (numberOfPlayers <=2 ) {
 			this.deckOfCards = new DeckOfCards(1);
 		}
@@ -44,7 +53,7 @@ public class Game {
 	}
 	
 	public void initalizePlayers (User user) {
-		players.add(new Player(user.getNickname()));
+		players.add( (Player) user);
 		this.currentPlayer = 0;
 		for (int i = 1; i < numberOfPlayers ; i++) {
 			players.add(new Player());
@@ -62,7 +71,7 @@ public class Game {
 	}
 	
 	public void currentPlayerDrawsFromDeck() {
-		getCurrentPlayer().draw(deckOfCards.drawACard());
+		getCurrentPlayer().draw(new Card(Rank.king, Suits.clubs));
 	}
 	
 
@@ -76,32 +85,38 @@ public class Game {
 		else
 			currentPlayer = 0;
 	}
+	
 
 	public Player getCurrentPlayer() {
 		return players.get(currentPlayer);
+	}
+	
+	public Player getNextPlayer () {
+		if (currentPlayer < numberOfPlayers - 1)
+			return players.get(currentPlayer + 1);
+		else
+			return players.get(0);
 	}
 
 	public int getCurrentPlayerNumber() {
 		return currentPlayer;
 	}
 
-	public boolean roundWon() {
-		boolean roundWon = true;
-		for (Card card: getCurrentPlayer().getTableCards() ) {
-			if (card.isFaceDown()) 
-				roundWon = false;
-		}
-		return roundWon;
-		///
-		//IMPLEMENTARE FUNZIONE PER GAMEWONCHECK
-		//IMPLEMENTA FUNZIONE CHE MOSTRA MESSAGGIO DI VITTORIA O SCONFITTA
-		///
+	public void nextRound() {
+		getCurrentPlayer().wonRound();
+		restoreTable();
 	}
 	
  	private void restoreTable() {
-		initializeDeck(numberOfPlayers);
+ 		initializeDeckAndDiscardPile(numberOfPlayers);
+ 		initializePlayersTableCards();
 		assignCards();
 	}
+
+	private void initializePlayersTableCards() {
+		for (Player player: players)
+			player.resetTableCards();
+	}	
 
 	public Collection<Player> getPlayers() {
 		return players;

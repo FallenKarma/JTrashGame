@@ -4,17 +4,11 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
-import java.util.concurrent.CountDownLatch;
-import java.util.logging.Logger;
 
-import javafx.animation.Animation;
 import javafx.animation.FadeTransition;
-import javafx.animation.KeyFrame;
 import javafx.animation.ParallelTransition;
 import javafx.animation.RotateTransition;
-import javafx.animation.Timeline;
 import javafx.animation.TranslateTransition;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
@@ -27,22 +21,21 @@ import javafx.util.Duration;
 import model.Card;
 import model.Game;
 import model.Player;
-import model.Rank;
-import model.Suits;
 import model.User;
 import utilites.CardImagesLoader;
-import utilites.LoggerUtil;
 
 public class GameController implements Initializable {
 	
 	private Game game;
-	private final Integer cardSpotsPerPlayer = 10;
-	private final Integer deckImageViewPosition = -1;
-	private final Integer cardInHandImageViewPosition = -2;
+	private static final Integer CARDSPOTSPERPLAYER = 10;
+	private static final Integer deckImageViewPosition = -1;
+	private static final Integer cardInHandImageViewPosition = -2;
 	
 	private static String userTurnOverMessage = "YOUR TURN IS OVER";
 	private static String userPlayerTurnMessage = "NOW IS YOUR TURN";
 	private static String nextPlayerTurnMessage = "NEXT PLAYER TURN";
+	private static String roundLostMessage = "YOU LOST THE ROUND!";
+	private static String roundWonMessage = "YOU WON THE ROUND!";
 	
 	List<ImageView> imageViews;
 	
@@ -65,7 +58,8 @@ public class GameController implements Initializable {
 	@FXML
 	ImageView movingDeckImage;
 
-
+	@FXML
+	ImageView deck;
 	
 	@FXML
 	Label userMessages;
@@ -120,17 +114,13 @@ public class GameController implements Initializable {
 	}
 	
 	public void setUpGame (Integer numberOfPlayers,User user) {
-		game = new Game (numberOfPlayers,user );
-		int i = 0;
-		for (Player player: game.getPlayers() ) {
-			assignCards (player,i);
-			i++;
-		}
+		game = Game.createGame(numberOfPlayers, user) ;
 		startRound();
 	}
 	
-	
 	private void startRound() {
+		assignCards();
+		startRoundAnimation();
 		drawPhase();
 	}
 
@@ -151,7 +141,6 @@ public class GameController implements Initializable {
 			if (currentPlayer.canPlayHandCard()) {
 				updateSingleCardTableView(currentHandCard.getValue() - 1);
 				cardsSwitchAnimation(cardInHand, currentHandCard.getValue() - 1);
-				currentPlayer.switchTableCard();
 			}
 			// If it is a figure, if it's a king he can choose where to put it;
 			// otherwise he has to discard
@@ -167,23 +156,31 @@ public class GameController implements Initializable {
 		}
 	}
 	
+	private void nextRound() {
+		if (game.getCurrentPlayer().wonGame()) {
+			endOfGameAnimation();
+		}
+		else {
+			endOfRoundAnimation();
+			showRoundResult();
+		}
+	}
+
+
 	private void nextTurn() {
 		showChangeOfTurnTransition();
 		game.nextPlayer();
 	}
 	
 	private void kingSpecialPlay() {
-		makeCardsClickable();
-	}
-
-	private void endRoundPhase() {
-		if (game.roundWon()) {
-			//TO DO
+		if (game.getCurrentPlayer().isBot()) {
+			Integer firstFaceDownCardPosition = game.getCurrentPlayer().getFirstFaceDownCard();
+			updateSingleCardTableView(firstFaceDownCardPosition);
+			game.getCurrentPlayer().specialKingSwitch(firstFaceDownCardPosition);
+			kingSwitchAnimation(getImageViewFromCardValue(firstFaceDownCardPosition), cardInHand);
 		}
-		else {
-			game.nextPlayer();
-			startRound();
-		}
+		else
+			makeCardsClickable();
 	}
 
 	
@@ -191,6 +188,7 @@ public class GameController implements Initializable {
 	private void makeCardsClickable() {
 		for (int i = 0; i < imageViews.size(); i ++) {
 			this.imageViews.get(i).setOnMouseClicked( e-> {
+				makeCardsNonClickable();
 				ImageView clickedImageView = (ImageView) e.getSource();
 				specialKingSwitch ( imageViews.indexOf(clickedImageView) );
 			});
@@ -216,7 +214,10 @@ public class GameController implements Initializable {
 		pt.getChildren().add(rotateSecondImage);
 		pt.setOnFinished(e -> {
 			switchImages(clickedImageView, cardInHand, firstImageAngle, secondImageAngle);
-			gamePhase();
+			if (game.getCurrentPlayer().hasWonRound()) 
+				nextRound();
+			else
+				gamePhase();
 		});
 		pt.play();
 	}
@@ -233,16 +234,10 @@ public class GameController implements Initializable {
 		}
 	}
 //
-//	private void makeCardsNonClickable() {
-//		for (int i=0; i<10; i++) {
-//			this.imageViews.get(i).setOnMouseClicked(null);
-//		}
-//	}
-
-
-	private void endGamePhase() {
-		updateGameView();
-		endRoundPhase();
+	private void makeCardsNonClickable() {
+		for (int i=0; i<10; i++) {
+			this.imageViews.get(i).setOnMouseClicked(null);
+		}
 	}
 
 	public void playerDiscard() {
@@ -251,10 +246,17 @@ public class GameController implements Initializable {
 	}
 
 
-	public void assignCards (Player player,int playerNumber) {
-		for (int i=0; i < player.getTableCardsNumber(); i++) {
-			int position = playerNumber * cardSpotsPerPlayer + i;
-			imageViews.get(position).setImage(CardImagesLoader.getBackOfCardImage());
+	public void assignCards () {
+		int playerNumber = 0;
+		for (Player player:game.getPlayers()) {
+			for (int cardPosition=0; cardPosition < 10; cardPosition++) {
+				int position = playerNumber * CARDSPOTSPERPLAYER + cardPosition;
+				if (cardPosition < player.getTableCardsNumber() )
+					imageViews.get(position).setImage(CardImagesLoader.getBackOfCardImage());
+				else
+					imageViews.get(position).setImage(null);
+			}
+			playerNumber++;
 		}
 		wastePile.setImage(CardImagesLoader.getImageFromCardName(game.getWastePile().peek().toString()));
 	}
@@ -269,9 +271,13 @@ public class GameController implements Initializable {
 	private void disableGameButtons() {
 		wastePileButton.setDisable(true);
 		deckButton.setDisable(true);
+		for (int i=0; i<10; i++) {
+			this.imageViews.get(i).setOnMouseClicked(null);
+		}
 	}
 
 	public void drawFromDeck () {
+		disableGameButtons();
 		game.currentPlayerDrawsFromDeck();
 		drawFromDeckAnimation();
 	}
@@ -383,9 +389,12 @@ public class GameController implements Initializable {
 		pt.getChildren().add(rotateFirstImage);
 		pt.getChildren().add(rotateSecondImage);
 		pt.setOnFinished(e -> {
-			ImageView destImage = getImageViewFromCardValue(imageViewPosition);
-			switchImages(image, destImage, firstImageAngle, secondImageAngle);
-			gamePhase();
+			switchImages(image, destinationImage, firstImageAngle, secondImageAngle);
+			game.getCurrentPlayer().switchTableCard();
+			if (game.getCurrentPlayer().hasWonRound()) 
+				nextRound();
+			else
+				gamePhase();
 		});
 		pt.play();
 	}
@@ -424,45 +433,95 @@ public class GameController implements Initializable {
 		return rotate;
 	}
 	
+	private void endOfGameAnimation() {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	private void showRoundResult () {
+		if (game.getCurrentPlayer().isBot())
+			userMessages.setText(roundLostMessage);
+		else
+			userMessages.setText(roundWonMessage);
+		FadeTransition fadeInTransition = getUserMessagesFadeInTransition();
+		FadeTransition fadeOutTransition = getUserMessagesFadeOutTransition();
+		fadeOutTransition.setOnFinished( e-> {
+			game.nextRound();
+			startRound();
+		});
+		fadeInTransition.setOnFinished(e-> fadeOutTransition.play());
+		fadeInTransition.play();
+	}
+	
+	private void endOfRoundAnimation() {
+		ParallelTransition pt = new ParallelTransition();
+		for (ImageView image:imageViews) {
+	        FadeTransition fadeTransition = new FadeTransition(Duration.seconds(2), image);
+	        fadeTransition.setFromValue(1.0); 
+	        fadeTransition.setToValue(0.0); 
+	        pt.getChildren().add(fadeTransition);
+		}
+		pt.play();
+	}
+	
+	private void startRoundAnimation () {
+		ParallelTransition pt = new ParallelTransition();
+		for (ImageView image:imageViews) {
+	        FadeTransition fadeTransition = new FadeTransition(Duration.seconds(1), image);
+	        fadeTransition.setFromValue(0.0); 
+	        fadeTransition.setToValue(1.0); 
+	        pt.getChildren().add(fadeTransition);
+		}
+		pt.play();
+	}
+	
 	public ImageView getImageViewFromCardValue (Integer cardValue) {
 		if (cardValue.equals(deckImageViewPosition)) 
 			return movingDeckImage;
 		if (cardValue.equals(cardInHandImageViewPosition)) {
 			return cardInHand;
 		}
-		int position = game.getCurrentPlayerNumber() * cardSpotsPerPlayer + cardValue;
+		int position = game.getCurrentPlayerNumber() * CARDSPOTSPERPLAYER + cardValue;
 		return imageViews.get(position);
 	}
 	
 	public void showInvalidCardChosenError() {
 		Alert alert = new Alert(Alert.AlertType.WARNING);
 		alert.setTitle("Errore");
-		alert.setHeaderText("La carta che hai selezionato non è valido!");
+		alert.setHeaderText("La carta che hai selezionato non è valida!");
 		alert.setContentText("Scegli una carta che non sia scoperta!");
 		alert.showAndWait();
 	}
 	
 	public void showChangeOfTurnTransition () {
-		if ( !game.getCurrentPlayer().isBot()) {
+		if ( !game.getCurrentPlayer().isBot() ) {
 			userMessages.setText(userTurnOverMessage);
 		}
-        FadeTransition fadeTransition = new FadeTransition(Duration.seconds(2), userMessages);
-        fadeTransition.setFromValue(0.0); // Fully visible
-        fadeTransition.setToValue(1.0); 
-        fadeTransition.setOnFinished(e -> {
-        	 userMessagesFadeOutTransition();
-        });
-        fadeTransition.play();
+		else if (game.getNextPlayer().isBot()) {
+			userMessages.setText(nextPlayerTurnMessage);
+		}
+		else 
+			userMessages.setText(userPlayerTurnMessage);
+        FadeTransition fadeInTransition = getUserMessagesFadeInTransition();
+        FadeTransition fadeOutTransition = getUserMessagesFadeOutTransition();
+        fadeOutTransition.setOnFinished(e -> drawPhase());
+        fadeInTransition.setOnFinished(e -> fadeOutTransition.play());
+        fadeInTransition.play();
         
 	}
-	public void userMessagesFadeOutTransition() {
+	
+	public FadeTransition getUserMessagesFadeInTransition () {
+        FadeTransition fadeTransition = new FadeTransition(Duration.seconds(2), userMessages);
+        fadeTransition.setFromValue(0.0); 
+        fadeTransition.setToValue(1.0); 
+        return fadeTransition;
+	}
+	
+	public FadeTransition getUserMessagesFadeOutTransition () {
         FadeTransition fadeTransition = new FadeTransition(Duration.seconds(2), userMessages);
         fadeTransition.setFromValue(1.0); 
         fadeTransition.setToValue(0.0); 
-        fadeTransition.setOnFinished(e -> {
-        	 drawPhase();
-        });
-        fadeTransition.play();
+        return fadeTransition;
 	}
 	
 	public void intializeImageViews () {
@@ -490,6 +549,9 @@ public class GameController implements Initializable {
 		imageViews.add(p1slot9);
 		imageViews.add(p1slot10);
 		
+//		imageViews.add(deck);
+//		imageViews.add(wastePile);
+//		imageViews.add(cardInHand);
 	}
 
 

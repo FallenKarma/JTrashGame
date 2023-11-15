@@ -12,6 +12,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
+import utilites.LoggerUtil;
+
 public class User {
 	static String usersFile = "Users.txt";
 	private String nickname;
@@ -54,10 +56,10 @@ public class User {
 			        myWriter.append(this.gamesLost.toString()+"\n");
 			        myWriter.append(this.level.toString()+"\n");
 			        myWriter.close();
-			        System.out.println("Successfully wrote to the file.");
+			        LoggerUtil.logInfo("Successfully wrote to the file.");
 		     } 
 			 catch (IOException e) {
-			        System.out.println("An error occurred.");
+				 LoggerUtil.logError("An error occurred.");
 			        e.printStackTrace();
 		     }
 	}
@@ -83,7 +85,7 @@ public class User {
 	        myReader.close();
 	    } 
 	    catch (FileNotFoundException e) {
-	        System.out.println("An error occurred.");
+	        LoggerUtil.logError("An error occurred.");
 	        e.printStackTrace();
 	    }
 		return userExists;
@@ -98,7 +100,7 @@ public class User {
 		} catch (IOException e1) {
 			e1.printStackTrace();
 		}
-	    ArrayList<Integer> newUserData = new ArrayList<Integer>();
+	    ArrayList<Integer> newUserData = new ArrayList<>();
 	    newUserData.add(this.gamesPlayed);
 	    newUserData.add(this.gamesWon);
 	    newUserData.add(this.gamesLost);

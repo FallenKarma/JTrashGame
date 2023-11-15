@@ -15,6 +15,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
+import model.Player;
 import model.User;
 import utilites.CardImagesLoader;
 
@@ -23,7 +24,7 @@ public class LoginController implements Initializable{
 	private Stage stage;
 	private Parent root;
 	private Scene scene;
-	private User user;
+	private Player user;
 	
 	@FXML
 	TextField usernameTF;
@@ -56,13 +57,13 @@ public class LoginController implements Initializable{
 	}
 
 	public void loadUser (String username){
-			user = new User(username);
+			user = new Player(username);
 	}
 	
 	public boolean userNameValidator (String username) {
 		if (username != null && username.length() != 0) {
 			for (int i = 0; i < username.length(); i++) {
-				if ((Character.isLetterOrDigit(username.charAt(i)) == false)) {
+				if ((!Character.isLetterOrDigit(username.charAt(i)))) {
 					return false;
 				}
 			}

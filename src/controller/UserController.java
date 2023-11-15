@@ -80,9 +80,9 @@ public class UserController {
 			gameController.setUpGame(numberOfPlayers,user);
 			Stage stage = (Stage) ((Node)event.getSource()).getScene().getWindow();
 			Scene scene = new Scene(root);
-			stage.setFullScreen(true);
-			stage.setResizable(false);
 			stage.setScene(scene);
+			stage.centerOnScreen();
+			stage.setFullScreen(true);
 			stage.show();
 		}
 		

@@ -1,8 +1,5 @@
 package model;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
 
 import utilites.LoggerUtil;
 
@@ -17,24 +14,26 @@ public class Player extends User{
 	private Integer tableCardsNumber;
 	private Card cardInHand;
 	
+	private static Integer startinTableCardsNumber = 10;
+	
 	//costruttore per giocatore reale
 	public Player (String username) {
 		super(username);
-		this.tableCardsNumber = 10;
-		this.tableCards = new Card[tableCardsNumber];
+		this.tableCardsNumber = startinTableCardsNumber;
+		this.tableCards = new Card[startinTableCardsNumber];
+	}
+	
+
+	//costruttore per bot
+	public Player () {
+		super();
+		this.tableCardsNumber=startinTableCardsNumber;
+		this.tableCards = new Card[startinTableCardsNumber];
 	}
 	
 	public void setTableCards(Card[] tableCards) {
 		this.tableCards = tableCards;
 	}
-
-	//costruttore per bot
-	public Player () {
-		super();
-		this.tableCardsNumber=10;
-		this.tableCards = new Card[tableCardsNumber];
-	}
-	
 	
 	public Card getCardInHand() {
 		return cardInHand;
@@ -56,7 +55,7 @@ public class Player extends User{
 
 	public boolean canPlayHandCard() {
 		int position = cardInHand.getValue();
-		if (position == 0 || cardInHand.isKing() || !tableCards[position-1].isFaceDown())
+		if (position == 0 || cardInHand.isKing() || !tableCards[position-1].isFaceDown() || position > tableCardsNumber)
 			return false;	
 		else {
 			tableCards[position-1].setFaceUp();
@@ -72,6 +71,7 @@ public class Player extends User{
 	 */
 	public boolean switchTableCard () {
 		int position = cardInHand.getValue();
+		cardInHand.setFaceUp();
 		Card relativeTableCard = tableCards[position-1];
 		LoggerUtil.logInfo("The current player just switched a " + cardInHand.toString() + " with a " + relativeTableCard.toString());
 		Card nextCardOnTheTable = this.cardInHand;
@@ -84,8 +84,17 @@ public class Player extends User{
 	public void specialKingSwitch(int position) {
 		cardInHand.setFaceUp();
 		Card relativeTableCard = tableCards[position];
+		relativeTableCard.setFaceUp();
 		tableCards[position] = cardInHand;
 		setCardInHand(relativeTableCard);
+	}
+	
+	public Integer getFirstFaceDownCard () {
+		for (int i=0; i < tableCardsNumber; i++) {
+			if (tableCards[i].isFaceDown() )
+				return i;
+		}
+		return null;
 	}
 	
 	public Card discard() {
@@ -102,23 +111,33 @@ public class Player extends User{
     public boolean isBot() {
     	return this.getNickname().equals("");
     }
+    
+    public boolean hasWonRound () {
+    	for (int i=0; i<tableCardsNumber; i++) {
+    		if (tableCards[i].isFaceDown()) 
+    			return false;
+    	}
+    	return true;
+    }
+    
+    public boolean wonGame() {
+    	if (tableCards.length == 1 && !tableCards[0].isFaceDown())
+    		return true;
+    	return false;
+    }
+    
+    public void resetTableCards () {
+    	for (int i=0; i<startinTableCardsNumber;i++) {
+    		tableCards[i] = null;
+    	}
+    }
+    
 	/**
      * Diminuisce di uno il numero di carte sul tavolo, da usare quando il player vince un turno
      * 
      */
-	public void reduceTableCardsNumber() {
+	public void wonRound() {
 		this.tableCardsNumber -= 1 ;
 	}
 
-	////////////////////////////////////////
-	//DEBUGGING METHODS
-	////////////////////////////////////////ù
-	void printCardsInHand () {
-		for (int i=0; i<tableCardsNumber; i++) {
-			System.out.println(this.tableCards[i]);
-		}
-	}
-	
-
-	
 }

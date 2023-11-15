@@ -7,6 +7,8 @@ public class CardImagesLoader {
 	private static String  imagesRootPath;
 	private static String backOfCardsImageName = "backOfCards";
 	
+	private CardImagesLoader () {};	
+	
 	public static Image getImageFromCardName (String cardToString) {
 		String currentDirectory = System.getProperty("user.dir");
 		imagesRootPath = currentDirectory + "\\src\\resources\\carte\\";
