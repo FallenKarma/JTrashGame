@@ -13,7 +13,8 @@ public enum Rank {
     ten(10),
     jack(0),
     queen(0),
-    king(11);
+    king(11),
+	joker(11);
 	
 	private final int value;
 

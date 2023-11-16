@@ -14,21 +14,21 @@ public class Player extends User{
 	private Integer tableCardsNumber;
 	private Card cardInHand;
 	
-	private static Integer startinTableCardsNumber = 10;
+	private static Integer startingTableCardsNumber = 10;
 	
 	//costruttore per giocatore reale
 	public Player (String username) {
 		super(username);
-		this.tableCardsNumber = startinTableCardsNumber;
-		this.tableCards = new Card[startinTableCardsNumber];
+		this.tableCardsNumber = startingTableCardsNumber;
+		this.tableCards = new Card[startingTableCardsNumber];
 	}
 	
 
 	//costruttore per bot
 	public Player () {
 		super();
-		this.tableCardsNumber=startinTableCardsNumber;
-		this.tableCards = new Card[startinTableCardsNumber];
+		this.tableCardsNumber=startingTableCardsNumber;
+		this.tableCards = new Card[startingTableCardsNumber];
 	}
 	
 	public void setTableCards(Card[] tableCards) {
@@ -55,7 +55,7 @@ public class Player extends User{
 
 	public boolean canPlayHandCard() {
 		int position = cardInHand.getValue();
-		if (position == 0 || cardInHand.isKing() || !tableCards[position-1].isFaceDown() || position > tableCardsNumber)
+		if (position == 0 || cardInHand.isKing() || position > tableCardsNumber || !tableCards[position-1].isFaceDown() )
 			return false;	
 		else {
 			tableCards[position-1].setFaceUp();
@@ -127,7 +127,7 @@ public class Player extends User{
     }
     
     public void resetTableCards () {
-    	for (int i=0; i<startinTableCardsNumber;i++) {
+    	for (int i=0; i<startingTableCardsNumber;i++) {
     		tableCards[i] = null;
     	}
     }

@@ -3,6 +3,7 @@ package model;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.stream.Collectors;
 
 public class DeckOfCards {
 	private ArrayList<Card> deck;
@@ -11,12 +12,13 @@ public class DeckOfCards {
 	public DeckOfCards (Integer numberOfDecks) {
 		this.deck = new ArrayList<>();
 		for (int i=0; i < numberOfDecks; i++) {
-			for (Rank rank:Rank.values()) {
+			for (Rank rank:Rank.values() ) {
 				for (Suits suit: Suits.values()) {
 					deck.add(new Card(rank,suit));
 				}
 			}
 		}
+		deck = (ArrayList<Card>) deck.stream().limit(deck.size() -2 ).collect(Collectors.toList());
 		shuffle();
 	}
 	

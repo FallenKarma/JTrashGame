@@ -49,7 +49,7 @@ public class Game {
 			this.deckOfCards = new DeckOfCards(2);
 		}
 		///////
-		wastePile.add(new Card(Rank.king, Suits.clubs));
+		wastePile.add(deckOfCards.drawACard());
 	}
 	
 	public void initalizePlayers (User user) {
@@ -71,7 +71,7 @@ public class Game {
 	}
 	
 	public void currentPlayerDrawsFromDeck() {
-		getCurrentPlayer().draw(new Card(Rank.king, Suits.clubs));
+		getCurrentPlayer().draw(deckOfCards.drawACard());
 	}
 	
 
@@ -151,6 +151,7 @@ public class Game {
 	public void setdeckOfCards(DeckOfCards deckOfCards) {
 		this.deckOfCards = deckOfCards;
 	}
+
 
 	
 	
