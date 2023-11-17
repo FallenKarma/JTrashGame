@@ -17,8 +17,8 @@ public class DeckOfCards {
 					deck.add(new Card(rank,suit));
 				}
 			}
+			deck = (ArrayList<Card>) deck.stream().limit(deck.size() -2 ).collect(Collectors.toList());
 		}
-		deck = (ArrayList<Card>) deck.stream().limit(deck.size() -2 ).collect(Collectors.toList());
 		shuffle();
 	}
 	

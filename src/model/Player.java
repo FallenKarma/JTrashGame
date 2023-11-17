@@ -109,7 +109,7 @@ public class Player extends User{
 	}
 
     public boolean isBot() {
-    	return this.getNickname().equals("");
+    	return this.getNickname().equals("bot");
     }
     
     public boolean hasWonRound () {

@@ -25,7 +25,7 @@ public class User {
 	
 	//Costruttore per bot
 	public User () {
-		nickname = "";
+		nickname = "bot";
 		gamesPlayed = 0;
 		gamesWon = 0;
 		gamesLost = 0;

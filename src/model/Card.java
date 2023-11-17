@@ -17,6 +17,11 @@ public class Card {
 	}
 	@Override
 	public String toString() {
+		if (rank == Rank.joker) {
+			if (suit == Suits.clubs)
+				return "black_" + rank;
+			return "red_" + rank;
+		}
 		return rank+ "_of_" + suit;
 	}
 	
