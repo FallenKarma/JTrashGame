@@ -32,11 +32,13 @@ public class GameController implements Initializable {
 	private static final Integer deckImageViewPosition = -1;
 	private static final Integer userCardInHandImageViewPosition = -2;
 	
-	private static String userTurnOverMessage = "YOUR TURN IS OVER";
-	private static String userPlayerTurnMessage = "NOW IS YOUR TURN";
-	private static String nextPlayerTurnMessage = "NEXT PLAYER TURN";
-	private static String roundLostMessage = "YOU LOST THE ROUND!";
-	private static String roundWonMessage = "YOU WON THE ROUND!";
+	private static final String userTurnOverMessage = "YOUR TURN IS OVER";
+	private static final String userPlayerTurnMessage = "NOW IS YOUR TURN";
+	private static final String nextPlayerTurnMessage = "NEXT PLAYER TURN";
+	private static final String roundLostMessage = "YOU LOST THE ROUND!";
+	private static final String roundWonMessage = "YOU WON THE ROUND!";
+	
+	private ImageView currentPlayerCardInHandImageView;
 	
 	List<ImageView> imageViews;
 	
@@ -57,13 +59,13 @@ public class GameController implements Initializable {
 	ImageView userCardInHand;
 	
 	@FXML
-	ImageView p1userCardInHand;
+	ImageView p1cardInHand;
 	
 	@FXML
-	ImageView p2userCardInHand;
+	ImageView p2cardInHand;
 	
 	@FXML
-	ImageView p3userCardInHand;
+	ImageView p3cardInHand;
 	
 	@FXML
 	ImageView movingDeckImage;
@@ -202,7 +204,6 @@ public class GameController implements Initializable {
 				}
 				else {
 					playerDiscard();
-					nextTurn();
 				}
 			}
 		}
@@ -220,29 +221,30 @@ public class GameController implements Initializable {
 	
 	private void switchCards() {
 		Card currentHandCard = game.getCurrentPlayer().getCardInHand();
-		ImageView currentPlayeruserCardInHand = getCurrentPlayeruserCardInHandImageView ();
-		cardsSwitchAnimation(userCardInHand, currentHandCard.getValue() - 1);
+		cardsSwitchAnimation(currentPlayerCardInHandImageView, currentHandCard.getValue() - 1);
 	}
 
 
-	private ImageView getCurrentPlayeruserCardInHandImageView() {
+	private ImageView getCurrentPlayerCardInHandImageView() {
 		Integer currentPlayerNumber = game.getCurrentPlayerNumber();
 		switch (currentPlayerNumber) {
 		  case 0:
 		    return userCardInHand;
 		  case 1:
-		    return p1userCardInHand;
+		    return p1cardInHand;
 		  case 2:
-			  return p2userCardInHand;
+			  return p2cardInHand;
 		  case 3:
-			  return p3userCardInHand;
+			  return p3cardInHand;
+	      default:
+	    	  return userCardInHand;
 		}
-		return userCardInHand;
 	}
 
 	private void nextTurn() {
 		showChangeOfTurnTransition();
 		game.nextPlayer();
+		currentPlayerCardInHandImageView = getCurrentPlayerCardInHandImageView();
 	}
 	
 	private void kingSpecialPlay() {
@@ -250,7 +252,7 @@ public class GameController implements Initializable {
 			Integer firstFaceDownCardPosition = game.getCurrentPlayer().getFirstFaceDownCard();
 			updateSingleCardTableView(firstFaceDownCardPosition);
 			game.getCurrentPlayer().specialKingSwitch(firstFaceDownCardPosition);
-			kingSwitchAnimation(getImageViewFromCardValue(firstFaceDownCardPosition), userCardInHand);
+			kingSwitchAnimation(getImageViewFromCardValue(firstFaceDownCardPosition), currentPlayerCardInHandImageView);
 		}
 		else
 			makeCardsClickable();
@@ -303,7 +305,7 @@ public class GameController implements Initializable {
 		else {
 			updateSingleCardTableView(clickedImagePosition);
 			game.getCurrentPlayer().specialKingSwitch(clickedImagePosition);
-			kingSwitchAnimation(getImageViewFromCardValue(clickedImagePosition), userCardInHand);
+			kingSwitchAnimation(getImageViewFromCardValue(clickedImagePosition), currentPlayerCardInHandImageView );
 		}
 	}
 //
@@ -360,15 +362,15 @@ public class GameController implements Initializable {
 		movingDeckImage.setImage(CardImagesLoader.getImageFromCardName(game.getCurrentPlayer().getCardInHand().toString()));
 		
 		Double deckImageAngle = movingDeckImage.getRotate();
-		Double userCardInHandAngle = userCardInHand.getRotate();
+		Double userCardInHandAngle = currentPlayerCardInHandImageView.getRotate();
 		
-		TranslateTransition translateAnimation = getTranslateAnimation(movingDeckImage, userCardInHand);
-		RotateTransition rotateTransition = getRotateAnimation(movingDeckImage, userCardInHand);
+		TranslateTransition translateAnimation = getTranslateAnimation(movingDeckImage, currentPlayerCardInHandImageView);
+		RotateTransition rotateTransition = getRotateAnimation(movingDeckImage, currentPlayerCardInHandImageView);
 		ParallelTransition pt = new ParallelTransition();
 		pt.getChildren().add(translateAnimation);
 		pt.getChildren().add(rotateTransition);
 		pt.setOnFinished(e->{
-			switchImages(movingDeckImage, userCardInHand,deckImageAngle,userCardInHandAngle);
+			switchImages(movingDeckImage, currentPlayerCardInHandImageView,deckImageAngle,userCardInHandAngle);
 			movingDeckImage.setImage(null);
 			gamePhase();
 		});
@@ -391,11 +393,6 @@ public class GameController implements Initializable {
 		else
 			wastePile.setImage(CardImagesLoader.getImageFromCardName(game.getWastePile().peek().toString()));
 	}
-
-	public void updateGameView() {
-			updateuserCardInHandView();
-			updatetWastePileView();
-	}
 	
 	private void updateSingleCardTableView(int position) {
 		Card tableCard = game.getCurrentPlayer().getTableCards()[position];
@@ -403,18 +400,18 @@ public class GameController implements Initializable {
 	}
 
 
-	public void updateuserCardInHandView() {
+	public void updateCardInHandView() {
 		Card userCardInHandEntity = game.getCurrentPlayer().getCardInHand();
 		if (userCardInHandEntity != null) {
-			userCardInHand.setImage(CardImagesLoader.getImageFromCardName(userCardInHandEntity.toString()));
+			currentPlayerCardInHandImageView.setImage(CardImagesLoader.getImageFromCardName(userCardInHandEntity.toString()));
 		}
 		else 
-			userCardInHand.setImage(null);
+			currentPlayerCardInHandImageView.setImage(null);
 	}
 	
 	private void drawFromWastePileAnimation() {
 		Double wastePileAngle = wastePile.getRotate();
-		Double userCardInHandAngle = userCardInHand.getRotate();
+		Double userCardInHandAngle = currentPlayerCardInHandImageView.getRotate();
 		
 		RotateTransition rotateAnimation = getRotateAnimation(wastePile, userCardInHand);
 		TranslateTransition translateAnimation = getTranslateAnimation(wastePile, userCardInHand);
@@ -430,16 +427,17 @@ public class GameController implements Initializable {
 	}
 	
 	private void playerDiscardAnimation() {
-		Double userCardInHandAngle = userCardInHand.getRotate();
+		Double userCardInHandAngle = currentPlayerCardInHandImageView.getRotate();
 		Double wastePileAngle = wastePile.getRotate();
-		RotateTransition rotateAnimation = getRotateAnimation(userCardInHand, wastePile);
-		TranslateTransition translateAnimation = getTranslateAnimation(userCardInHand, wastePile);
+		RotateTransition rotateAnimation = getRotateAnimation(currentPlayerCardInHandImageView, wastePile);
+		TranslateTransition translateAnimation = getTranslateAnimation(currentPlayerCardInHandImageView, wastePile);
 		ParallelTransition pt = new ParallelTransition();
 		pt.getChildren().add(rotateAnimation);
 		pt.getChildren().add(translateAnimation);
 		pt.setOnFinished(e->{
-			switchImages(wastePile, userCardInHand,wastePileAngle, userCardInHandAngle);
-			updateuserCardInHandView();
+			switchImages(wastePile, currentPlayerCardInHandImageView,wastePileAngle, userCardInHandAngle);
+			updateCardInHandView();
+			nextTurn();
 		});
 		pt.play();
 	}
@@ -597,6 +595,7 @@ public class GameController implements Initializable {
 	
 	public void intializeImageViews () {
 		
+		currentPlayerCardInHandImageView = userCardInHand;
 		this.imageViews = new ArrayList<>();
 		
 		imageViews.add(userSlot1);

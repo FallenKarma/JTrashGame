@@ -85,7 +85,7 @@
             <ImageView fx:id="p2slot5" fitHeight="90.0" fitWidth="90.0" pickOnBounds="true" preserveRatio="true" rotate="180.0" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
             <ImageView fx:id="p2cardInHand" fitHeight="90.0" fitWidth="90.0" pickOnBounds="true" preserveRatio="true" rotate="180.0" GridPane.columnIndex="4" GridPane.halignment="CENTER" GridPane.rowIndex="2" />
             <ImageView fx:id="p3cardInHand" fitHeight="90.0" fitWidth="90.0" pickOnBounds="true" preserveRatio="true" rotate="-90.0" GridPane.columnIndex="6" GridPane.halignment="CENTER" GridPane.rowIndex="4" />
-            <ImageView fx:id="p1cardInHand" fitHeight="90.0" fitWidth="90.0" pickOnBounds="true" preserveRatio="true" rotate="90.0" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="4" />
+            <ImageView fx:id="p1cardInHand" fitHeight="90.0" fitWidth="90.0" pickOnBounds="true" preserveRatio="true" rotate="90" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="4" />
             <ImageView fx:id="p3slot1" fitHeight="90.0" fitWidth="90.0" pickOnBounds="true" preserveRatio="true" rotate="-90.0" GridPane.columnIndex="7" GridPane.halignment="CENTER" GridPane.rowIndex="6" GridPane.valignment="CENTER" />
             <ImageView fx:id="p3slot10" fitHeight="90.0" fitWidth="90.0" pickOnBounds="true" preserveRatio="true" rotate="-90.0" GridPane.columnIndex="8" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="CENTER" />
             <ImageView fx:id="p3slot5" fitHeight="90.0" fitWidth="90.0" pickOnBounds="true" preserveRatio="true" rotate="-90.0" GridPane.columnIndex="7" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="CENTER" />
