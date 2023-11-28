@@ -33,7 +33,7 @@ public class Card {
 		return faceDown;
 	}
 	
-	public boolean isKing () {
+	public boolean isKingOrJoker () {
 		return getValue() == 11;
 	}
 	

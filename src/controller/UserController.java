@@ -40,15 +40,15 @@ public class UserController {
 			welcomeUserLabel.setText("Benvenuto " + user.getNickname());
 		}
 		else welcomeUserLabel.setText("Ciao " + user.getNickname());
-		gamesPlayedLabel.setText("Partite giocate: " + user.getGamesPlayed());
-		gamesWonLabel.setText("Partite vinte: " + user.getGamesWon());
-		gamesLostLabel.setText("Partite perse: " + user.getGamesLost());
-		levelLabel.setText("Livello: " + user.getLevel());
+		gamesPlayedLabel.setText( user.getGamesPlayed().toString() );
+		gamesWonLabel.setText( user.getGamesWon().toString() );
+		gamesLostLabel.setText(user.getGamesLost().toString() );
+		levelLabel.setText(user.getLevel().toString() );
 		numberOfBots.getItems().addAll(numberOfBotsOptions);
 	}
 	
 	public void logout (ActionEvent event) {
-		FXMLLoader loader =  new FXMLLoader(getClass().getResource("../view/welcomeView.fxml"));
+		FXMLLoader loader =  new FXMLLoader(getClass().getResource("../view/loginView.fxml"));
 		Parent root = null;
 		try {
 			root = loader.load();

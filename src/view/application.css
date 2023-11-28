@@ -1,6 +1,5 @@
 .gridPane {
-	-fx-background-color: green;
-
+	-fx-background-image: url("background.jpg");
 }
 
 .welcomeViewMiddlePhrase {

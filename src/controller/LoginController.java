@@ -13,11 +13,8 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.TextField;
-import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
 import model.Player;
-import model.User;
-import utilites.CardImagesLoader;
 
 public class LoginController implements Initializable{
 	
@@ -28,12 +25,6 @@ public class LoginController implements Initializable{
 	
 	@FXML
 	TextField usernameTF;
-	
-	@FXML
-	ImageView imageLeft;
-	
-	@FXML
-	ImageView imageRight;
 	
 
 	public void login (ActionEvent event) throws IOException {
@@ -87,7 +78,5 @@ public class LoginController implements Initializable{
 
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
-		imageLeft.setImage(CardImagesLoader.getImageFromCardName("black_joker"));
-		imageRight.setImage(CardImagesLoader.getImageFromCardName("ace_of_spades"));
 	}
 }

@@ -55,12 +55,17 @@ public class Player extends User{
 
 	public boolean canPlayHandCard() {
 		int position = cardInHand.getValue();
-		if (position == 0 || cardInHand.isKing() || position > tableCardsNumber || !tableCards[position-1].isFaceDown() )
+		if (position == 0 || cardInHand.isKingOrJoker() || position > tableCardsNumber || (!tableCards[position-1].isFaceDown() && !tableCards[position-1].isKingOrJoker()) )
 			return false;	
 		else {
 			tableCards[position-1].setFaceUp();
 			return true;
 		}
+	}
+	
+	public boolean canPlayCard(Card card) {
+		int position = card.getValue();
+		return !(position == 0 || position > tableCardsNumber || !tableCards[position-1].isFaceDown() );
 	}
 	
 	
@@ -121,7 +126,7 @@ public class Player extends User{
     }
     
     public boolean wonGame() {
-    	if (tableCards.length == 1 && !tableCards[0].isFaceDown())
+    	if (tableCardsNumber == 1 && !tableCards[0].isFaceDown())
     		return true;
     	return false;
     }
@@ -130,6 +135,15 @@ public class Player extends User{
     	for (int i=0; i<startingTableCardsNumber;i++) {
     		tableCards[i] = null;
     	}
+    }
+    
+    public void addLastGameToStats () {
+    	if (wonGame()) {
+    		addGameWon();
+    	}
+    	else
+    		addGameLost();
+    	updateUserStats();
     }
     
 	/**

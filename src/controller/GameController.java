@@ -1,5 +1,6 @@
 package controller;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -9,20 +10,27 @@ import javafx.animation.FadeTransition;
 import javafx.animation.ParallelTransition;
 import javafx.animation.RotateTransition;
 import javafx.animation.TranslateTransition;
+import javafx.event.ActionEvent;
+import javafx.event.Event;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
+import javafx.stage.Stage;
 import javafx.util.Duration;
 import model.Card;
 import model.Game;
 import model.Player;
 import model.User;
+import utilites.AudioManager;
 import utilites.CardImagesLoader;
 
 public class GameController implements Initializable {
@@ -37,6 +45,8 @@ public class GameController implements Initializable {
 	private static final String nextPlayerTurnMessage = "NEXT PLAYER TURN";
 	private static final String roundLostMessage = "YOU LOST THE ROUND!";
 	private static final String roundWonMessage = "YOU WON THE ROUND!";
+	private static final String gameLostMessage = "YOU LOST THE GAME!";
+	private static final String gameWonMessage = "YOU WON THE GAME!";
 	
 	private ImageView currentPlayerCardInHandImageView;
 	
@@ -54,6 +64,9 @@ public class GameController implements Initializable {
 	
 	@FXML
 	ImageView wastePile;
+	
+	@FXML
+	ImageView secondWastePileCard;
 	
 	@FXML
 	ImageView userCardInHand;
@@ -173,6 +186,7 @@ public class GameController implements Initializable {
 	}
 	
 	private void startRound() {
+		resetImageViews();
 		assignCards();
 		startRoundAnimation();
 		drawPhase();
@@ -183,10 +197,18 @@ public class GameController implements Initializable {
 			enableGameButtons();
 		}
 		else {
-			drawFromDeck();
+			botDrawPhase();
 		}
 	}
 	
+	private void botDrawPhase() {
+		if (game.getCurrentPlayer().canPlayCard(game.getWastePile().peek())) {
+			drawFromWastePile();
+		}
+		else
+			drawFromDeck();
+	}
+
 	private void gamePhase() {
 		Player currentPlayer = game.getCurrentPlayer();
 		Card currentHandCard = currentPlayer.getCardInHand();
@@ -199,8 +221,8 @@ public class GameController implements Initializable {
 			// If it is a figure, if it's a king he can choose where to put it;
 			// otherwise he has to discard
 			else {
-				if (currentHandCard.isKing()) {
-					kingSpecialPlay();
+				if (currentHandCard.isKingOrJoker()) {
+					kingOrJokerSpecialPlay();
 				}
 				else {
 					playerDiscard();
@@ -211,6 +233,7 @@ public class GameController implements Initializable {
 	
 	private void nextRound() {
 		if (game.getCurrentPlayer().wonGame()) {
+			game.getCurrentPlayer().addLastGameToStats();
 			endOfGameAnimation();
 		}
 		else {
@@ -247,7 +270,7 @@ public class GameController implements Initializable {
 		currentPlayerCardInHandImageView = getCurrentPlayerCardInHandImageView();
 	}
 	
-	private void kingSpecialPlay() {
+	private void kingOrJokerSpecialPlay() {
 		if (game.getCurrentPlayer().isBot()) {
 			Integer firstFaceDownCardPosition = game.getCurrentPlayer().getFirstFaceDownCard();
 			updateSingleCardTableView(firstFaceDownCardPosition);
@@ -410,20 +433,29 @@ public class GameController implements Initializable {
 	}
 	
 	private void drawFromWastePileAnimation() {
+		setSecondWastePileCard();
+		
 		Double wastePileAngle = wastePile.getRotate();
 		Double userCardInHandAngle = currentPlayerCardInHandImageView.getRotate();
 		
-		RotateTransition rotateAnimation = getRotateAnimation(wastePile, userCardInHand);
-		TranslateTransition translateAnimation = getTranslateAnimation(wastePile, userCardInHand);
-		ParallelTransition pt = new ParallelTransition();
-		pt.getChildren().add(rotateAnimation);
-		pt.getChildren().add(translateAnimation);
+		RotateTransition rotateAnimation = getRotateAnimation(wastePile, currentPlayerCardInHandImageView);
+		TranslateTransition translateAnimation = getTranslateAnimation(wastePile, currentPlayerCardInHandImageView);
+		ParallelTransition pt = new ParallelTransition(rotateAnimation, translateAnimation);
 		pt.setOnFinished(e->{
-			switchImages(wastePile, userCardInHand,wastePileAngle,userCardInHandAngle);
+			switchImages(wastePile, currentPlayerCardInHandImageView,wastePileAngle,userCardInHandAngle);
 			gamePhase();
 		});
 		pt.play();
 
+	}
+	
+	private void setSecondWastePileCard () {
+		if (!game.getWastePile().isEmpty()) {
+			Card card = game.getWastePile().peek();
+			secondWastePileCard.setImage(CardImagesLoader.getImageFromCardName(card.toString()));
+		}
+		else
+			secondWastePileCard.setImage(null);
 	}
 	
 	private void playerDiscardAnimation() {
@@ -431,9 +463,7 @@ public class GameController implements Initializable {
 		Double wastePileAngle = wastePile.getRotate();
 		RotateTransition rotateAnimation = getRotateAnimation(currentPlayerCardInHandImageView, wastePile);
 		TranslateTransition translateAnimation = getTranslateAnimation(currentPlayerCardInHandImageView, wastePile);
-		ParallelTransition pt = new ParallelTransition();
-		pt.getChildren().add(rotateAnimation);
-		pt.getChildren().add(translateAnimation);
+		ParallelTransition pt = new ParallelTransition(rotateAnimation, translateAnimation);
 		pt.setOnFinished(e->{
 			switchImages(wastePile, currentPlayerCardInHandImageView,wastePileAngle, userCardInHandAngle);
 			updateCardInHandView();
@@ -453,12 +483,9 @@ public class GameController implements Initializable {
 		RotateTransition rotateFirstImage = getRotateAnimation(image, destinationImage);
 		RotateTransition rotateSecondImage = getRotateAnimation(destinationImage, image);
 		
-		ParallelTransition pt = new ParallelTransition();
+		ParallelTransition pt = new ParallelTransition(translateFirstImage,translateSecondImage,
+														rotateFirstImage,rotateSecondImage);
 		pt.setDelay(Duration.millis(1000));
-		pt.getChildren().add(translateFirstImage);
-		pt.getChildren().add(translateSecondImage);
-		pt.getChildren().add(rotateFirstImage);
-		pt.getChildren().add(rotateSecondImage);
 		pt.setOnFinished(e -> {
 			switchImages(image, destinationImage, firstImageAngle, secondImageAngle);
 			game.getCurrentPlayer().switchTableCard();
@@ -467,6 +494,7 @@ public class GameController implements Initializable {
 			else
 				gamePhase();
 		});
+		AudioManager.getInstance().reproduceCardFlippingSound();
 		pt.play();
 	}
 	
@@ -505,8 +533,33 @@ public class GameController implements Initializable {
 	}
 	
 	private void endOfGameAnimation() {
+		if (game.getCurrentPlayer().isBot())
+			userMessages.setText(gameLostMessage);
+		else
+			userMessages.setText(gameWonMessage);
+		FadeTransition fadeInTransition = getFadeInTransition(userMessages);
+		FadeTransition fadeOutTransition = getFadeOutTransition(userMessages);
+		fadeInTransition.setOnFinished(e-> fadeOutTransition.play());
+		fadeOutTransition.setOnFinished(e-> {
+			showEndOfGameAlert();
+		});
+		fadeInTransition.play();
 	}
 	
+	private void showEndOfGameAlert() {
+		Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+		alert.setTitle("END OF THE GAME");
+		alert.setHeaderText("THE GAME FINISHED!");
+		alert.setOnCloseRequest(e-> {
+			try {
+				switchToUserView(e);
+			} catch (IOException e1) {
+				e1.printStackTrace();
+			}
+		});
+		alert.showAndWait();
+	}
+
 	private void showRoundResult () {
 		if (game.getCurrentPlayer().isBot())
 			userMessages.setText(roundLostMessage);
@@ -593,6 +646,11 @@ public class GameController implements Initializable {
         return fadeTransition;
 	}
 	
+	public void resetImageViews () {
+		imageViews.stream().forEach( i -> i .setImage(null));
+		deck.setImage(CardImagesLoader.getBackOfCardImage());
+	}
+	
 	public void intializeImageViews () {
 		
 		currentPlayerCardInHandImageView = userCardInHand;
@@ -639,9 +697,22 @@ public class GameController implements Initializable {
 		imageViews.add(p3slot9);
 		imageViews.add(p3slot10);
 		
-//		imageViews.add(deck);
-//		imageViews.add(wastePile);
-//		imageViews.add(userCardInHand);
+		imageViews.add(deck);
+		imageViews.add(wastePile);
+		imageViews.add(secondWastePileCard);
+		imageViews.add(userCardInHand);
+		imageViews.add(p1cardInHand);
+		imageViews.add(p2cardInHand);
+		imageViews.add(p3cardInHand);
+	}
+	
+	private void switchToUserView (Event event) throws IOException {
+		FXMLLoader loader =  new FXMLLoader(getClass().getResource("../view/userView.fxml"));
+		Parent root = loader.load();
+		Stage stage = (Stage) ((Node)event.getSource()).getScene().getWindow();
+		Scene scene = new Scene(root);
+		stage.setScene(scene);
+		stage.show();
 	}
 
 

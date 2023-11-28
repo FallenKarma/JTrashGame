@@ -11,7 +11,7 @@ import javafx.stage.Stage;
 public class Main extends Application {
 	@Override
 	public void start(Stage primaryStage) throws Exception {
-		Parent root = FXMLLoader.load(getClass().getResource("../view/welcomeView.fxml"));
+		Parent root = FXMLLoader.load(getClass().getResource("../view/loginView.fxml"));
 		Scene start = new Scene(root,1000,600);
 		primaryStage.setScene(start);
 		primaryStage.setTitle("JTrash");

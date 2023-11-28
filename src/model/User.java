@@ -21,7 +21,7 @@ public class User {
 	private Integer gamesWon;
 	private Integer gamesLost;
 	private Integer level;
-	
+	private static final ArrayList<Integer> LEVELUPSTEPS = new ArrayList<>(List.of(1,3,6,10,15,25,30) );
 	
 	//Costruttore per bot
 	public User () {
@@ -92,7 +92,7 @@ public class User {
 	}
 	
 	
-	public void updateUser () {
+	public void updateUserStats () {
 		Path path = Paths.get(this.usersFile);
 		List<String> fileContent = new ArrayList<>();
 		try {
@@ -172,6 +172,26 @@ public class User {
 	public void setLevel(Integer level) {
 		this.level = level;
 	}
+	
+	public void addGameLost() {
+		gamesPlayed += 1;
+		gamesLost +=1;
+	}
+	
+	private Integer calculateLevel() {
+		if ( LEVELUPSTEPS.contains(gamesWon) ) {
+			return level+1;
+		}
+		else 
+			return level;
+	}
+
+	public void addGameWon() {
+		gamesPlayed += 1;
+		gamesWon += 1;
+		level = calculateLevel();
+	}
+	
 	
 	
 

@@ -14,15 +14,18 @@ public class CardImagesLoader {
 	private CardImagesLoader () {};	
 	
 	public static Image getImageFromCardName (String cardToString) {
-		if (imagesRootPath == null) {
-			String currentDirectory = "file:\\" + System.getProperty("user.dir");
-			imagesRootPath = currentDirectory + "\\src\\resources\\carte\\";
-		}
+		setRootPath();
 		return new Image(imagesRootPath + cardToString + imagesExtension);
 	}
 	
 	public static Image getBackOfCardImage () {
+		setRootPath();
 		return new Image(imagesRootPath + backOfCardsImageName + imagesExtension);
+	}
+
+	private static void setRootPath() {
+		String currentDirectory = "file:\\" + System.getProperty("user.dir");
+		imagesRootPath = currentDirectory + "\\src\\resources\\carte\\";
 	}
 
 }

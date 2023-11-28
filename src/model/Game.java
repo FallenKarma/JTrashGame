@@ -37,18 +37,23 @@ public class Game {
 	}
 	
 	public void initializeGame(User user) {
-		initializeDeckAndDiscardPile(numberOfPlayers);
+		initializeDeck(numberOfPlayers);
+		initializeDiscardPile();
 		initalizePlayers(user);
 		assignCards();
 	}
-	public void initializeDeckAndDiscardPile (Integer numberOfPlayers) {
+	public void initializeDeck (Integer numberOfPlayers) {
 		if (numberOfPlayers <=2 ) {
 			this.deckOfCards = new DeckOfCards(1);
 		}
 		else {
 			this.deckOfCards = new DeckOfCards(2);
 		}
-		///////
+
+	}
+	
+	public void initializeDiscardPile () {
+		wastePile.removeAllElements();
 		wastePile.add(deckOfCards.drawACard());
 	}
 	
@@ -104,11 +109,12 @@ public class Game {
 
 	public void nextRound() {
 		getCurrentPlayer().wonRound();
-		restoreTable();
+		initializeTable();
 	}
 	
- 	private void restoreTable() {
- 		initializeDeckAndDiscardPile(numberOfPlayers);
+ 	private void initializeTable() {
+ 		initializeDeck(numberOfPlayers);
+ 		initializeDiscardPile();
  		initializePlayersTableCards();
 		assignCards();
 	}
@@ -151,8 +157,6 @@ public class Game {
 	public void setdeckOfCards(DeckOfCards deckOfCards) {
 		this.deckOfCards = deckOfCards;
 	}
-
-
 	
 	
 	
