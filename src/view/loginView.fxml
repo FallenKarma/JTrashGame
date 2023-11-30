@@ -10,7 +10,7 @@
 
 <AnchorPane prefHeight="600.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.LoginController">
    <children>
-      <GridPane alignment="CENTER" prefHeight="600.0" prefWidth="1000.0" styleClass="gridPane" stylesheets="@application.css" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <GridPane alignment="CENTER" prefHeight="600.0" prefWidth="1000.0" styleClass="gridPane" stylesheets="@../application/application.css" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <columnConstraints>
             <ColumnConstraints hgrow="SOMETIMES" maxWidth="210.0" minWidth="10.0" prefWidth="150.0" />
           <ColumnConstraints hgrow="SOMETIMES" maxWidth="730.0" minWidth="10.0" prefWidth="690.0" />
