@@ -4,7 +4,11 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import CustomExceptions.IncorrectUserNameException;
+import CustomExceptions.UnexistingUserException;
 import javafx.event.ActionEvent;
+import javafx.event.Event;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -13,58 +17,62 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 import model.Player;
+import model.User;
 
-public class LoginController implements Initializable{
+public class LoginController {
 	
-	private Stage stage;
 	private Parent root;
 	private Scene scene;
-	private Player user;
+	private User user;
 	
 	@FXML
 	TextField usernameTF;
 	
-
-	public void login (ActionEvent event) throws IOException {
+	public void login () {
 		String username = usernameTF.getText();
-		if (userNameValidator(username)) {
-			loadUser(username);
-			switchToUserView(event);
+		try {
+			user = User.login(username);
+			switchToUserView();
+		} catch (IncorrectUserNameException e) {
+			usernameNotValidWarning();
+		} catch (UnexistingUserException e) {
+			unexistingUsernameWarning();
 		}
-		else usernameNotValidWarning(event);
 	}
 	
-	public void switchToUserView(ActionEvent event) throws IOException {
+	public void register() {
+		String username = usernameTF.getText();
+		try {
+			user = User.createUser(username);
+			switchToUserView();
+		} catch (IncorrectUserNameException e) {
+			usernameNotValidWarning();
+		}
+	}
+	
+	public void switchToUserView()  {
+		Stage stage;
 		FXMLLoader loader =  new FXMLLoader(getClass().getResource("../view/userView.fxml"));
-		root = loader.load();
+		try {
+			root = loader.load();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		UserController userController = loader.getController();
 		userController.setUserView(user);
-		stage = (Stage) ((Node)event.getSource()).getScene().getWindow();
+		stage = (Stage) usernameTF.getScene().getWindow();
 		scene = new Scene(root);
 		stage.setScene(scene);
 		stage.show();
 	}
 
-	public void loadUser (String username){
-			user = new Player(username);
-	}
-	
-	public boolean userNameValidator (String username) {
-		if (username != null && username.length() != 0) {
-			for (int i = 0; i < username.length(); i++) {
-				if ((!Character.isLetterOrDigit(username.charAt(i)))) {
-					return false;
-				}
-			}
-			return true;
-		}
-		return false;
-	}
-	
 	@FXML
-	public void usernameNotValidWarning (ActionEvent event) {
+	public void usernameNotValidWarning () {
 		Alert alert = new Alert(Alert.AlertType.WARNING);
 		alert.setTitle("Errore");
 		alert.setHeaderText("Username non valido!");
@@ -72,11 +80,22 @@ public class LoginController implements Initializable{
 		alert.showAndWait();
 	}
 	
+	@FXML
+	public void unexistingUsernameWarning () {
+		Alert alert = new Alert(Alert.AlertType.WARNING);
+		alert.setTitle("Errore");
+		alert.setHeaderText("Utente inesistente!");
+		alert.setContentText("Lo username che hai inserito non ha un utente associato, inserisci uno username corretto o crea un nuovo utente.");
+		alert.showAndWait();
+	}
+	
 	public void unloadUser () {
 		this.user = null;
 	}
-
-	@Override
-	public void initialize(URL arg0, ResourceBundle arg1) {
+	
+	@FXML
+	private void loginFromEnterKey(KeyEvent event) {
+		if (event.getCode() == KeyCode.ENTER)
+			login();
 	}
 }

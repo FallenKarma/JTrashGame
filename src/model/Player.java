@@ -5,8 +5,9 @@ import utilites.LoggerUtil;
 /**
  * Represents a player in the card game.
  */
-public class Player extends User {
+public class Player {
 
+	private User user;
     private Card[] tableCards;
     private Integer tableCardsNumber;
     private Card cardInHand;
@@ -18,8 +19,8 @@ public class Player extends User {
      *
      * @param username The username of the player.
      */
-    public Player(String username) {
-        super(username);
+    public Player(User user) {
+    	this.user = user;
         this.tableCardsNumber = startingTableCardsNumber;
         this.tableCards = new Card[startingTableCardsNumber];
     }
@@ -28,7 +29,7 @@ public class Player extends User {
      * Constructor for a bot player.
      */
     public Player() {
-        super();
+    	this.user = null;
         this.tableCardsNumber = startingTableCardsNumber;
         this.tableCards = new Card[startingTableCardsNumber];
     }
@@ -177,10 +178,11 @@ public class Player extends User {
      * @return true if the player is a bot, false otherwise.
      */
     public boolean isBot() {
-        return this.getNickname().equals("bot");
+        return user == null ;
     }
 
-    /**
+
+	/**
      * Checks if the player has won the round.
      *
      * @return true if the player has won the round, false otherwise.
@@ -218,10 +220,10 @@ public class Player extends User {
      */
     public void addLastGameToStats() {
         if (wonGame()) {
-            addGameWon();
+            user.addGameWon();
         } else
-            addGameLost();
-        updateUserStats();
+            user.addGameLost();
+        user.updateUserStats();
     }
 
     /**

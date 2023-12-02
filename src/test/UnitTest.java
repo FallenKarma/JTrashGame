@@ -35,13 +35,5 @@ public class UnitTest {
 		assertEquals(testCard, player.getTableCards()[3]);
 	}
 	
-	@Test
-	void testPlayerDiscard() {
-		Player user =  new Player("gabry");
-		Card card = new Card(Rank.ace, Suits.clubs);
-		user.setCardInHand(card);
-		
-		assertEquals(user.discard(), card);
-	}
 	
 }

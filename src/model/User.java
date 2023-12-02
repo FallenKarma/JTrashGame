@@ -12,9 +12,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
+import CustomExceptions.IncorrectUserNameException;
+import CustomExceptions.UnexistingUserException;
 import utilites.LoggerUtil;
 
 public class User {
+	
 	static String usersFile = "Users.txt";
 	private String nickname;
 	private Integer gamesPlayed;
@@ -31,37 +34,45 @@ public class User {
 		gamesLost = 0;
 		level = 0;
 	}
-	
-	//Costruttore per utenti reali
+
 	public User(String nickname) {
 		this.nickname = nickname;
-		loginOrCreate ( this.nickname);
+		loadUser();
 	}
-	
-	public void loginOrCreate (String nickname) {
-		if (!checkIfUserExistsAndLoad(nickname)) {
-			this.gamesPlayed = 0;
-			this.gamesWon = 0;
-			this.gamesLost = 0;
-			this.level = 1;
-			createUser (nickname);
+
+	public static User login (String nickname) throws UnexistingUserException, IncorrectUserNameException {
+		if (isUserNameValid(nickname)) {
+			if (userExists(nickname)) {
+				return new User(nickname);
+			}
+			else 
+				throw new UnexistingUserException("Unexisting user!");
+		}
+		else {
+			 throw new IncorrectUserNameException("Username not valid!");
 		}
 	}
-	public void createUser (String nickname) {  
-			 try {
-			        FileWriter myWriter = new FileWriter("Users.txt",true);
-			        myWriter.append(nickname+"\n");
-			        myWriter.append(this.gamesPlayed.toString()+"\n");
-			        myWriter.append(this.gamesWon.toString()+"\n");
-			        myWriter.append(this.gamesLost.toString()+"\n");
-			        myWriter.append(this.level.toString()+"\n");
-			        myWriter.close();
-			        LoggerUtil.logInfo("Successfully wrote to the file.");
-		     } 
-			 catch (IOException e) {
-				 LoggerUtil.logError("An error occurred.");
-			        e.printStackTrace();
-		     }
+	
+	public static User createUser (String nickname) throws IncorrectUserNameException{  
+		if (isUserNameValid(nickname)) {
+			try (FileWriter myWriter = new FileWriter("Users.txt",true)){
+				myWriter.append(nickname+"\n");
+				myWriter.append("0\n");
+				myWriter.append("0\n");
+				myWriter.append("0\n");
+				myWriter.append("1\n");
+				myWriter.close();
+				LoggerUtil.logInfo("The new user was created succesfully.");
+				return new User(nickname);
+			} 
+			catch (IOException e) {
+				LoggerUtil.logError("An error occurred.");
+				e.printStackTrace();
+			}
+		}
+		else 
+			throw new IncorrectUserNameException("Username not valid!");
+		return null;
 	}
 	
 
@@ -89,6 +100,45 @@ public class User {
 	        e.printStackTrace();
 	    }
 		return userExists;
+	}
+	
+	public static boolean userExists (String username) {
+		File file = new File(usersFile);
+	    try (Scanner myReader = new Scanner(file)){
+	        while (myReader.hasNextLine()) {
+	          String line = myReader.nextLine();
+	          if (line.contains(username)) {
+	        	  return true;
+	          }
+	        }
+	    } 
+	    catch (FileNotFoundException e) {
+	        LoggerUtil.logError("An error occurred.");
+	        e.printStackTrace();
+	    }
+	    return false;
+	}
+	
+	private void loadUser () {
+	    try {
+	        File file = new File(usersFile);
+	        Scanner myReader = new Scanner(file);
+	        while (myReader.hasNextLine()) {
+	          String line = myReader.nextLine();
+	          if (line.contains(nickname)) {
+	        	  this.gamesPlayed = Integer.valueOf(myReader.nextLine());
+	        	  this.gamesWon = Integer.valueOf(myReader.nextLine());
+	        	  this.gamesLost = Integer.valueOf(myReader.nextLine());
+	        	  this.level = Integer.valueOf(myReader.nextLine());
+	        	  break;
+	          }
+	        }
+	        myReader.close();
+	    } 
+	    catch (FileNotFoundException e) {
+	        LoggerUtil.logError("An error occurred.");
+	        e.printStackTrace();
+	    }
 	}
 	
 	
@@ -192,7 +242,17 @@ public class User {
 		level = calculateLevel();
 	}
 	
-	
+	public static boolean isUserNameValid (String username) {
+		if (username != null && username.length() != 0) {
+			for (int i = 0; i < username.length(); i++) {
+				if ((!Character.isLetterOrDigit(username.charAt(i)))) {
+					return false;
+				}
+			}
+			return true;
+		}
+		return false;
+	}
 	
 
 

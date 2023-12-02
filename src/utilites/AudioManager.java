@@ -9,7 +9,7 @@ import javafx.scene.media.MediaPlayer;
 public class AudioManager {
 	private static AudioManager instance;
 	private static final String audioDirectory = "./src/resources/audio/";
-	private static final String cardFlippingFileName = "flipCardV2.mp3";
+	private static final String cardFlippingFileName = "flipCard.wav";
 
 	public static AudioManager getInstance() {
 		if (instance == null)

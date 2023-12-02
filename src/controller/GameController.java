@@ -36,6 +36,7 @@ import utilites.CardImagesLoader;
 public class GameController implements Initializable {
 	
 	private Game game;
+	
 	private static final Integer CARDSPOTSPERPLAYER = 10;
 	private static final Integer deckImageViewPosition = -1;
 	private static final Integer userCardInHandImageViewPosition = -2;
@@ -445,6 +446,7 @@ public class GameController implements Initializable {
 			switchImages(wastePile, currentPlayerCardInHandImageView,wastePileAngle,userCardInHandAngle);
 			gamePhase();
 		});
+		AudioManager.getInstance().reproduceCardFlippingSound();
 		pt.play();
 
 	}
@@ -469,6 +471,7 @@ public class GameController implements Initializable {
 			updateCardInHandView();
 			nextTurn();
 		});
+		AudioManager.getInstance().reproduceCardFlippingSound();
 		pt.play();
 	}
 	

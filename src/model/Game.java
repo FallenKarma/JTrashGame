@@ -89,7 +89,7 @@ public class Game {
      * @param user The user representing one of the players.
      */
     public void initalizePlayers(User user) {
-        players.add((Player) user);
+        players.add(new Player(user));
         this.currentPlayer = 0;
         for (int i = 1; i < numberOfPlayers; i++) {
             players.add(new Player());
@@ -209,7 +209,7 @@ public class Game {
      *
      * @return The waste pile stack.
      */
-    public Stack<Card> getWastePile() {
+    public Stack<Card> getWastePile() { 
         return wastePile;
     }
 
