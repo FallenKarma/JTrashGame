@@ -1,4 +1,4 @@
-package CustomExceptions;
+package customExceptions;
 
 public class IncorrectUserNameException extends Exception{
     public IncorrectUserNameException(String errorMessage) {

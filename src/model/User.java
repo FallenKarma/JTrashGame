@@ -12,8 +12,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-import CustomExceptions.IncorrectUserNameException;
-import CustomExceptions.UnexistingUserException;
+import org.json.simple.JSONObject;
+
+import customExceptions.IncorrectUserNameException;
+import customExceptions.UnexistingUserException;
+import customExceptions.UserAlreadyExistsException;
+import utilites.JsonManager;
 import utilites.LoggerUtil;
 
 public class User {
@@ -24,157 +28,80 @@ public class User {
 	private Integer gamesWon;
 	private Integer gamesLost;
 	private Integer level;
-	private static final ArrayList<Integer> LEVELUPSTEPS = new ArrayList<>(List.of(1,3,6,10,15,25,30) );
 	
-	//Costruttore per bot
-	public User () {
-		nickname = "bot";
-		gamesPlayed = 0;
-		gamesWon = 0;
-		gamesLost = 0;
-		level = 0;
+	private static final ArrayList<Integer> LEVELUPSTEPS = new ArrayList<>(List.of(1,3,6,10,15,25,30) );
+	private static final String USERNAME_NOT_VALID_MESSAGE = "Username not valid!";
+	private static final String UNEXISTING_USER_MESSAGE = "Unexisting user!";
+	private static final String ALREADY_EXISTING_USER_MESSAGE= "Username not valid!";
+	
+	public User(String nickname, Integer gamesPlayed, Integer gamesWon, Integer gamesLost, Integer level) {
+		this.nickname = nickname;
+		this.gamesPlayed = gamesPlayed;
+		this.gamesWon = gamesWon;
+		this.gamesLost = gamesLost;
+		this.level = level;
 	}
 
 	public User(String nickname) {
 		this.nickname = nickname;
-		loadUser();
+		this.gamesPlayed = 0;
+		this.gamesWon = 0;
+		this.gamesLost = 0;
+		this.level = 1;
 	}
 
-	public static User login (String nickname) throws UnexistingUserException, IncorrectUserNameException {
+	public static User login(String nickname) throws IncorrectUserNameException, UnexistingUserException {
 		if (isUserNameValid(nickname)) {
-			if (userExists(nickname)) {
-				return new User(nickname);
-			}
-			else 
-				throw new UnexistingUserException("Unexisting user!");
+			if (JsonManager.userExists(nickname))
+				return JsonManager.loadUser(nickname);
+			else
+				throw new UnexistingUserException(UNEXISTING_USER_MESSAGE);
 		}
 		else {
-			 throw new IncorrectUserNameException("Username not valid!");
+			throw new IncorrectUserNameException(USERNAME_NOT_VALID_MESSAGE);
 		}
 	}
 	
-	public static User createUser (String nickname) throws IncorrectUserNameException{  
+	public static User register (String nickname) throws IncorrectUserNameException, UserAlreadyExistsException {
+		User user = null;
 		if (isUserNameValid(nickname)) {
-			try (FileWriter myWriter = new FileWriter("Users.txt",true)){
-				myWriter.append(nickname+"\n");
-				myWriter.append("0\n");
-				myWriter.append("0\n");
-				myWriter.append("0\n");
-				myWriter.append("1\n");
-				myWriter.close();
-				LoggerUtil.logInfo("The new user was created succesfully.");
-				return new User(nickname);
-			} 
-			catch (IOException e) {
-				LoggerUtil.logError("An error occurred.");
-				e.printStackTrace();
+			if (!JsonManager.userExists(nickname)) {
+				user = new User(nickname);
+				JsonManager.addUser(user);
+				return user;
 			}
+			else
+				throw new UserAlreadyExistsException(ALREADY_EXISTING_USER_MESSAGE);
 		}
-		else 
-			throw new IncorrectUserNameException("Username not valid!");
-		return null;
+		else {
+			throw new IncorrectUserNameException(USERNAME_NOT_VALID_MESSAGE);
+		}
 	}
-	
 
-
-	public boolean checkIfUserExistsAndLoad (String nickname) {
-		Boolean userExists = false;
-	    try {
-	        File file = new File(usersFile);
-	        Scanner myReader = new Scanner(file);
-	        while (myReader.hasNextLine()) {
-	          String line = myReader.nextLine();
-	          if (line.contains(nickname)) {
-	        	  userExists = true;
-	        	  this.gamesPlayed = Integer.valueOf(myReader.nextLine());
-	        	  this.gamesWon = Integer.valueOf(myReader.nextLine());
-	        	  this.gamesLost = Integer.valueOf(myReader.nextLine());
-	        	  this.level = Integer.valueOf(myReader.nextLine());
-	        	  break;
-	          }
-	        }
-	        myReader.close();
-	    } 
-	    catch (FileNotFoundException e) {
-	        LoggerUtil.logError("An error occurred.");
-	        e.printStackTrace();
-	    }
-		return userExists;
-	}
-	
-	public static boolean userExists (String username) {
-		File file = new File(usersFile);
-	    try (Scanner myReader = new Scanner(file)){
-	        while (myReader.hasNextLine()) {
-	          String line = myReader.nextLine();
-	          if (line.contains(username)) {
-	        	  return true;
-	          }
-	        }
-	    } 
-	    catch (FileNotFoundException e) {
-	        LoggerUtil.logError("An error occurred.");
-	        e.printStackTrace();
-	    }
-	    return false;
-	}
-	
-	private void loadUser () {
-	    try {
-	        File file = new File(usersFile);
-	        Scanner myReader = new Scanner(file);
-	        while (myReader.hasNextLine()) {
-	          String line = myReader.nextLine();
-	          if (line.contains(nickname)) {
-	        	  this.gamesPlayed = Integer.valueOf(myReader.nextLine());
-	        	  this.gamesWon = Integer.valueOf(myReader.nextLine());
-	        	  this.gamesLost = Integer.valueOf(myReader.nextLine());
-	        	  this.level = Integer.valueOf(myReader.nextLine());
-	        	  break;
-	          }
-	        }
-	        myReader.close();
-	    } 
-	    catch (FileNotFoundException e) {
-	        LoggerUtil.logError("An error occurred.");
-	        e.printStackTrace();
-	    }
-	}
-	
-	
 	public void updateUserStats () {
-		Path path = Paths.get(this.usersFile);
-		List<String> fileContent = new ArrayList<>();
-		try {
-			fileContent = new ArrayList<>(Files.readAllLines(path, StandardCharsets.UTF_8));
-		} catch (IOException e1) {
-			e1.printStackTrace();
-		}
-	    ArrayList<Integer> newUserData = new ArrayList<>();
-	    newUserData.add(this.gamesPlayed);
-	    newUserData.add(this.gamesWon);
-	    newUserData.add(this.gamesLost);
-	    newUserData.add(this.level);
-	    boolean userFound = false;
-	    int index = 0;
-		for (int i = 0; i < fileContent.size(); i++) {
-			if (fileContent.get(i).equals(nickname)) {
-				userFound = true;
-			}
-			if (userFound) {
-				fileContent.set(i, newUserData.get(index).toString());
-				index+=1;
-				if (index==4) break;
-			}
-		}
-
-		try {
-			Files.write(path, fileContent, StandardCharsets.UTF_8);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
+		JsonManager.updateUser(this);
 	}
+	
+	
+    public static User fromJSON(JSONObject jsonObject) {
+        String nickname = (String) jsonObject.get("nickname");
+        Integer gamesPlayed = ((Number)jsonObject.get("gamesPlayed")).intValue(); ;
+        Integer gamesWon = ((Number)jsonObject.get("gamesWon")).intValue(); ;
+        Integer gamesLost = ((Number)jsonObject.get("gamesLost")).intValue(); ;
+        Integer level = ((Number)jsonObject.get("level")).intValue(); ;
+        
+        return new User(nickname, gamesPlayed, gamesWon, gamesLost, level);
+    }
+    
+    public JSONObject toJSON() {
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("nickname", this.nickname);
+        jsonObject.put("gamesPlayed", this.gamesPlayed);
+        jsonObject.put("gamesWon", this.gamesWon);
+        jsonObject.put("gamesLost", this.gamesLost);
+        jsonObject.put("level", this.level);
+        return jsonObject;
+    }
 	
 	
 	public String getNickname() {
@@ -195,12 +122,6 @@ public class User {
 
 	public Integer getGamesWon() {
 		return gamesWon;
-	}
-
-	@Override
-	public String toString() {
-		return "User [nickname=" + nickname + ", gamesPlayed=" + gamesPlayed + ", gamesWon=" + gamesWon + ", gamesLost="
-				+ gamesLost + ", level=" + level + "]";
 	}
 
 	public void setGamesWon(Integer gamesWon) {
@@ -225,7 +146,8 @@ public class User {
 	
 	public void addGameLost() {
 		gamesPlayed += 1;
-		gamesLost +=1;
+		gamesLost += 1;
+		updateUserStats();
 	}
 	
 	private Integer calculateLevel() {
@@ -240,6 +162,7 @@ public class User {
 		gamesPlayed += 1;
 		gamesWon += 1;
 		level = calculateLevel();
+		updateUserStats();
 	}
 	
 	public static boolean isUserNameValid (String username) {

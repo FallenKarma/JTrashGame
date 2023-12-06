@@ -1,27 +1,19 @@
 package controller;
 
 import java.io.IOException;
-import java.net.URL;
-import java.util.ResourceBundle;
 
-import CustomExceptions.IncorrectUserNameException;
-import CustomExceptions.UnexistingUserException;
-import javafx.event.ActionEvent;
-import javafx.event.Event;
-import javafx.event.EventHandler;
+import customExceptions.IncorrectUserNameException;
+import customExceptions.UnexistingUserException;
+import customExceptions.UserAlreadyExistsException;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.fxml.Initializable;
-import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
-import model.Player;
 import model.User;
 
 public class LoginController {
@@ -33,25 +25,27 @@ public class LoginController {
 	@FXML
 	TextField usernameTF;
 	
+	public void register () {
+		String username = usernameTF.getText();
+		try {
+			user = User.register(username);
+			switchToUserView();
+		} catch (IncorrectUserNameException e) {
+			showUsernameNotValidWarning();
+		} catch (UserAlreadyExistsException e) {
+			showUserAlreadyExistsWarning();
+		}
+	}
+	
 	public void login () {
 		String username = usernameTF.getText();
 		try {
 			user = User.login(username);
 			switchToUserView();
 		} catch (IncorrectUserNameException e) {
-			usernameNotValidWarning();
+			showUsernameNotValidWarning();
 		} catch (UnexistingUserException e) {
-			unexistingUsernameWarning();
-		}
-	}
-	
-	public void register() {
-		String username = usernameTF.getText();
-		try {
-			user = User.createUser(username);
-			switchToUserView();
-		} catch (IncorrectUserNameException e) {
-			usernameNotValidWarning();
+			showUnexistingUsernameWarning();
 		}
 	}
 	
@@ -72,7 +66,7 @@ public class LoginController {
 	}
 
 	@FXML
-	public void usernameNotValidWarning () {
+	public void showUsernameNotValidWarning () {
 		Alert alert = new Alert(Alert.AlertType.WARNING);
 		alert.setTitle("Errore");
 		alert.setHeaderText("Username non valido!");
@@ -81,11 +75,20 @@ public class LoginController {
 	}
 	
 	@FXML
-	public void unexistingUsernameWarning () {
+	public void showUnexistingUsernameWarning () {
 		Alert alert = new Alert(Alert.AlertType.WARNING);
 		alert.setTitle("Errore");
 		alert.setHeaderText("Utente inesistente!");
 		alert.setContentText("Lo username che hai inserito non ha un utente associato, inserisci uno username corretto o crea un nuovo utente.");
+		alert.showAndWait();
+	}
+	
+	@FXML
+	private void showUserAlreadyExistsWarning() {
+		Alert alert = new Alert(Alert.AlertType.WARNING);
+		alert.setTitle("Errore");
+		alert.setHeaderText("Questo username è già stato utilizzato!");
+		alert.setContentText("Lo username che hai inserito ha già un utente associato, inserisci uno username diverso.");
 		alert.showAndWait();
 	}
 	

@@ -12,7 +12,7 @@ public class Player {
     private Integer tableCardsNumber;
     private Card cardInHand;
 
-    private static Integer startingTableCardsNumber = 10;
+    private static Integer startingTableCardsNumber = 1;
 
     /**
      * Constructor for a real player.
@@ -219,11 +219,11 @@ public class Player {
      * Adds the result of the last game to the player's statistics.
      */
     public void addLastGameToStats() {
-        if (wonGame()) {
+        if (!isBot() && wonGame()) {
             user.addGameWon();
-        } else
-            user.addGameLost();
-        user.updateUserStats();
+        } else {
+        	user.addGameLost();
+        }
     }
 
     /**
