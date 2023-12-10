@@ -14,9 +14,9 @@ import java.util.Scanner;
 
 import org.json.simple.JSONObject;
 
-import customExceptions.IncorrectUserNameException;
-import customExceptions.UnexistingUserException;
-import customExceptions.UserAlreadyExistsException;
+import CustomExceptions.IncorrectUserNameException;
+import CustomExceptions.UnexistingUserException;
+import CustomExceptions.UserAlreadyExistsException;
 import utilites.JsonManager;
 import utilites.LoggerUtil;
 

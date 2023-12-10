@@ -2,9 +2,9 @@ package controller;
 
 import java.io.IOException;
 
-import customExceptions.IncorrectUserNameException;
-import customExceptions.UnexistingUserException;
-import customExceptions.UserAlreadyExistsException;
+import CustomExceptions.IncorrectUserNameException;
+import CustomExceptions.UnexistingUserException;
+import CustomExceptions.UserAlreadyExistsException;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;

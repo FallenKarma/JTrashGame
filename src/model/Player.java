@@ -12,7 +12,7 @@ public class Player {
     private Integer tableCardsNumber;
     private Card cardInHand;
 
-    private static Integer startingTableCardsNumber = 1;
+    private static Integer startingTableCardsNumber = 10;
 
     /**
      * Constructor for a real player.

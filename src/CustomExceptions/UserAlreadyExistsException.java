@@ -1,4 +1,4 @@
-package customExceptions;
+package CustomExceptions;
 
 public class UserAlreadyExistsException extends Exception{
 	public UserAlreadyExistsException(String message) {
