@@ -201,9 +201,7 @@ public class Player {
      * @return true if the player has won the game, false otherwise.
      */
     public boolean wonGame() {
-        if (tableCardsNumber == 1 && !tableCards[0].isFaceDown())
-            return true;
-        return false;
+        return (tableCardsNumber == 1 && !tableCards[0].isFaceDown() );
     }
 
     /**
@@ -219,10 +217,11 @@ public class Player {
      * Adds the result of the last game to the player's statistics.
      */
     public void addLastGameToStats() {
-        if (!isBot() && wonGame()) {
-            user.addGameWon();
-        } else {
-        	user.addGameLost();
+        if (!isBot()) {
+        	if (wonGame())
+        		user.addGameWon();
+        	else
+            	user.addGameLost();
         }
     }
 
