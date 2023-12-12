@@ -40,9 +40,9 @@ public class LoginController {
 	
 	public void login () {
 		String username = usernameTF.getText();
-		usernameTF.setText("");
 		try {
 			user = User.login(username);
+			usernameTF.setText("");
 			switchToUserView();
 		} catch (IncorrectUserNameException e) {
 			showUsernameNotValidWarning();

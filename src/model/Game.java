@@ -80,8 +80,7 @@ public class Game {
      */
     public void initializeDiscardPile() {
         wastePile.removeAllElements();
-//        wastePile.add(deckOfCards.drawACard());
-        wastePile.add(new Card(Rank.ace, Suits.clubs));
+        wastePile.add(deckOfCards.drawACard());
     }
 
     /**

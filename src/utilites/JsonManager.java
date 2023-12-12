@@ -13,7 +13,7 @@ import model.User;
 
 public class JsonManager {
 	private static JSONParser jsonParser ;
-	private static String usersJsonFilePath = "C:\\Users\\admin\\eclipse-workspace\\JTrashGame\\users.json";
+	private static String usersJsonFilePath = "users.json";
 	
 	public static User loadUser (String nickname) {
 		loadParser();
