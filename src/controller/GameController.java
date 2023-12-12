@@ -4,13 +4,14 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 import javafx.animation.FadeTransition;
 import javafx.animation.ParallelTransition;
 import javafx.animation.RotateTransition;
 import javafx.animation.TranslateTransition;
-import javafx.event.ActionEvent;
+import javafx.application.Platform;
 import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -20,6 +21,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -32,6 +34,7 @@ import model.Player;
 import model.User;
 import utilites.AudioManager;
 import utilites.CardImagesLoader;
+import utilites.LoggerUtil;
 
 public class GameController implements Initializable {
 	
@@ -182,7 +185,7 @@ public class GameController implements Initializable {
 	}
 	
 	public void setUpGame (Integer numberOfPlayers,User user) {
-		game = Game.createGame(numberOfPlayers, user) ;
+		game = Game.getGame(numberOfPlayers, user) ;
 		startRound();
 	}
 	
@@ -234,7 +237,7 @@ public class GameController implements Initializable {
 	
 	private void nextRound() {
 		if (game.getCurrentPlayer().wonGame()) {
-			game.getCurrentPlayer().addLastGameToStats();
+			game.getHumanPlayer().addLastGameToStats();
 			endOfGameAnimation();
 		}
 		else {
@@ -332,7 +335,7 @@ public class GameController implements Initializable {
 			kingSwitchAnimation(getImageViewFromCardValue(clickedImagePosition), currentPlayerCardInHandImageView );
 		}
 	}
-//
+	
 	private void makeCardsNonClickable() {
 		for (int i=0; i<10; i++) {
 			this.imageViews.get(i).setOnMouseClicked(null);
@@ -407,15 +410,6 @@ public class GameController implements Initializable {
 		disableGameButtons();
     	game.currentPlayerDrawsFromWastePile();
     	drawFromWastePileAnimation();
-	}
-	
-
-	private void updatetWastePileView() {
-		if (game.getWastePile().isEmpty()) {
-			wastePile.setImage(null);
-		}
-		else
-			wastePile.setImage(CardImagesLoader.getImageFromCardName(game.getWastePile().peek().toString()));
 	}
 	
 	private void updateSingleCardTableView(int position) {
@@ -544,7 +538,7 @@ public class GameController implements Initializable {
 		FadeTransition fadeOutTransition = getFadeOutTransition(userMessages);
 		fadeInTransition.setOnFinished(e-> fadeOutTransition.play());
 		fadeOutTransition.setOnFinished(e-> {
-			showEndOfGameAlert();
+			Platform.runLater( ()-> showEndOfGameAlert() );
 		});
 		fadeInTransition.play();
 	}
@@ -553,14 +547,23 @@ public class GameController implements Initializable {
 		Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
 		alert.setTitle("END OF THE GAME");
 		alert.setHeaderText("THE GAME FINISHED!");
-		alert.setOnCloseRequest(e-> {
-			try {
-				switchToUserView(e);
-			} catch (IOException e1) {
-				e1.printStackTrace();
-			}
-		});
-		alert.showAndWait();
+		
+        ButtonType playAgainButton = new ButtonType("Exit game");
+        ButtonType goToMainButton = new ButtonType("Go to Main Page");
+
+        alert.getButtonTypes().setAll(playAgainButton, goToMainButton);
+
+        alert.showAndWait().ifPresent(response -> {
+            if (response == playAgainButton) {
+                System.exit(0);
+            } else if (response == goToMainButton) {
+                try {
+					switchToUserView();
+				} catch (IOException e1) {
+					LoggerUtil.logError(e1.getMessage());
+				}
+            }
+        });
 	}
 
 	private void showRoundResult () {
@@ -709,12 +712,17 @@ public class GameController implements Initializable {
 		imageViews.add(p3cardInHand);
 	}
 	
-	private void switchToUserView (Event event) throws IOException {
+	private void switchToUserView () throws IOException {
+		Parent root = null;
+		Stage stage;
 		FXMLLoader loader =  new FXMLLoader(getClass().getResource("../view/userView.fxml"));
-		Parent root = loader.load();
-		Stage stage = (Stage) ((Node)event.getSource()).getScene().getWindow();
+		root = loader.load();
+		UserController userController = loader.getController();
+		userController.setUserView(game.getHumanPlayer().getUser());
+		stage = (Stage) wastePileButton.getScene().getWindow();
 		Scene scene = new Scene(root);
 		stage.setScene(scene);
+		stage.centerOnScreen();
 		stage.show();
 	}
 

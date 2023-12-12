@@ -231,4 +231,10 @@ public class Player {
     public void wonRound() {
         this.tableCardsNumber -= 1;
     }
+
+	public User getUser() {
+		return user;
+	}
+    
+    
 }

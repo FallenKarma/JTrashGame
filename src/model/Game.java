@@ -26,19 +26,12 @@ public class Game {
      * @param user            The user representing the human player.
      * @return The created or existing instance of the game.
      */
-    public static Game createGame(Integer numberOfPlayers, User user) {
+    public static Game getGame(Integer numberOfPlayers, User user) {
         if (game == null) {
             game = new Game(numberOfPlayers, user);
         }
-        return game;
-    }
-
-    /**
-     * Gets the existing instance of the game.
-     *
-     * @return The existing instance of the game.
-     */
-    public static Game getInstance() {
+        else
+        	game.resetGame(numberOfPlayers, user);
         return game;
     }
 
@@ -60,6 +53,16 @@ public class Game {
         initializeDiscardPile();
         initalizePlayers(user);
         assignCards();
+    }
+    
+    /**
+     * Resets the game by setting up the deck, discard pile, players, and assigning cards.
+     *
+     * @param user The user representing one of the players.
+     */
+    public void resetGame(Integer numberOfPlayers, User user) {
+    	this.numberOfPlayers = numberOfPlayers;
+    	initializeGame(user);
     }
 
     /**
@@ -89,6 +92,7 @@ public class Game {
      * @param user The user representing one of the players.
      */
     public void initalizePlayers(User user) {
+    	players.clear();
         players.add(new Player(user));
         this.currentPlayer = 0;
         for (int i = 1; i < numberOfPlayers; i++) {
@@ -174,6 +178,10 @@ public class Game {
         initializeTable();
     }
 
+    /**
+     * Initializes the game table, including the deck, discard pile,
+     * player table cards, and assigns cards to players.
+     */
     private void initializeTable() {
         initializeDeck(numberOfPlayers);
         initializeDiscardPile();
@@ -181,6 +189,10 @@ public class Game {
         assignCards();
     }
 
+    /**
+     * Initializes the table cards for each player by resetting their
+     * current table card state.
+     */
     private void initializePlayersTableCards() {
         for (Player player : players)
             player.resetTableCards();
@@ -256,5 +268,14 @@ public class Game {
      */
     public void setdeckOfCards(DeckOfCards deckOfCards) {
         this.deckOfCards = deckOfCards;
+    }
+    
+    /**
+     * Retrieves the human player from the list of players.
+     *
+     * @return The human player.
+     */
+    public Player getHumanPlayer() {
+    	return players.get(0);
     }
 }
