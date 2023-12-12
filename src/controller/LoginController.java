@@ -27,6 +27,7 @@ public class LoginController {
 	
 	public void register () {
 		String username = usernameTF.getText();
+		usernameTF.setText("");
 		try {
 			user = User.register(username);
 			switchToUserView();
@@ -39,6 +40,7 @@ public class LoginController {
 	
 	public void login () {
 		String username = usernameTF.getText();
+		usernameTF.setText("");
 		try {
 			user = User.login(username);
 			switchToUserView();

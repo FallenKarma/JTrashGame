@@ -50,7 +50,7 @@ public class User {
 		this.level = 1;
 	}
 
-	public static User login(String nickname) throws IncorrectUserNameException, UnexistingUserException {
+	public static User login(String nickname) {
 		if (isUserNameValid(nickname)) {
 			if (JsonManager.userExists(nickname))
 				return JsonManager.loadUser(nickname);
@@ -62,7 +62,7 @@ public class User {
 		}
 	}
 	
-	public static User register (String nickname) throws IncorrectUserNameException, UserAlreadyExistsException {
+	public static User register (String nickname) {
 		User user = null;
 		if (isUserNameValid(nickname)) {
 			if (!JsonManager.userExists(nickname)) {
