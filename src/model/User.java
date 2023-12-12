@@ -17,11 +17,6 @@ public class User {
 	private Integer gamesWon;
 	private Integer gamesLost;
 	private Integer level;
-	
-	 /**
-	 * File path to store user data.
-	 */
-    static String usersFile = "Users.txt";
 
 
     /**
@@ -92,7 +87,7 @@ public class User {
      * @throws IncorrectUserNameException If the username is not valid.
      * @throws UserAlreadyExistsException If the user already exists.
      */
-    public static User register(String nickname) throws IncorrectUserNameException, UserAlreadyExistsException {
+    public static User register(String nickname) {
         User user = null;
         if (isUserNameValid(nickname)) {
             if (!JsonManager.userExists(nickname)) {
