@@ -15,6 +15,10 @@ import javafx.scene.control.Label;
 import javafx.stage.Stage;
 import model.User;
 
+/**
+ * Controller class responsible for managing user-related actions and interactions in the user interface.
+ * Handles user information display, logout, and game setup.
+ */
 public class UserController {
 	private User user;
 	@FXML
@@ -34,6 +38,12 @@ public class UserController {
 	
 	private Integer[] numberOfBotsOptions = { 1 , 2 , 3 };
 
+    /**
+     * Sets up the user view with the provided user information.
+     * Displays a welcome message and user statistics.
+     *
+     * @param user The User object containing user information.
+     */
 	public void setUserView (User user) {
 		this.user = user;
 		if (user.getGamesPlayed()==0) {
@@ -47,6 +57,11 @@ public class UserController {
 		numberOfBots.getItems().addAll(numberOfBotsOptions);
 	}
 	
+    /**
+     * Logs out the current user and switches to the login view.
+     *
+     * @param event The ActionEvent triggered by clicking the logout button.
+     */
 	public void logout (ActionEvent event) {
 		FXMLLoader loader =  new FXMLLoader(getClass().getResource("../view/loginView.fxml"));
 		Parent root = null;
@@ -63,6 +78,13 @@ public class UserController {
 		stage.show();
 	}
 	
+    /**
+     * Starts a new game with the specified number of players.
+     * Switches to the game view after setup.
+     * Shows an error if the number of players is not selected.
+     *
+     * @param event The ActionEvent triggered by clicking the start game button.
+     */
 	public void startGame (ActionEvent event) {
 		if (numberOfBots.getValue()==null) {
 			showInvalidNumberOfPlayersError();
@@ -87,7 +109,9 @@ public class UserController {
 		
 	}
 	
-	
+    /**
+     * Displays a warning dialog for an invalid number of players during game setup.
+     */
 	public void showInvalidNumberOfPlayersError() {
 		Alert alert = new Alert(Alert.AlertType.WARNING);
 		alert.setTitle("Errore");

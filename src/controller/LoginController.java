@@ -16,6 +16,10 @@ import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 import model.User;
 
+/**
+ * Controller class responsible for handling user login and registration actions.
+ * Manages the interaction between the user interface and the User model.
+ */
 public class LoginController {
 	
 	private Parent root;
@@ -25,6 +29,11 @@ public class LoginController {
 	@FXML
 	TextField usernameTF;
 	
+    /**
+     * Registers a new user with the provided username.
+     * If successful, switches to the user view.
+     * Shows a warning if the username is not valid or if the user already exists.
+     */
 	public void register () {
 		String username = usernameTF.getText();
 		usernameTF.setText("");
@@ -38,6 +47,11 @@ public class LoginController {
 		}
 	}
 	
+	 /**
+     * Logs in the user with the provided username.
+     * If successful, switches to the user view.
+     * Shows a warning if the username is not valid or if the user does not exist.
+     */
 	public void login () {
 		String username = usernameTF.getText();
 		try {
@@ -51,6 +65,10 @@ public class LoginController {
 		}
 	}
 	
+    /**
+     * Switches the application view to the user view after a successful login or registration.
+     * Loads the corresponding FXML file and sets the user information in the UserController.
+     */
 	public void switchToUserView()  {
 		Stage stage;
 		FXMLLoader loader =  new FXMLLoader(getClass().getResource("../view/userView.fxml"));
@@ -67,6 +85,9 @@ public class LoginController {
 		stage.show();
 	}
 
+    /**
+     * Displays a warning dialog for an invalid username during login or registration.
+     */
 	@FXML
 	public void showUsernameNotValidWarning () {
 		Alert alert = new Alert(Alert.AlertType.WARNING);
@@ -76,6 +97,9 @@ public class LoginController {
 		alert.showAndWait();
 	}
 	
+    /**
+     * Displays a warning dialog for a non-existing username during login.
+     */
 	@FXML
 	public void showUnexistingUsernameWarning () {
 		Alert alert = new Alert(Alert.AlertType.WARNING);
@@ -85,6 +109,9 @@ public class LoginController {
 		alert.showAndWait();
 	}
 	
+    /**
+     * Displays a warning dialog for an already existing username during registration.
+     */
 	@FXML
 	private void showUserAlreadyExistsWarning() {
 		Alert alert = new Alert(Alert.AlertType.WARNING);
@@ -94,10 +121,19 @@ public class LoginController {
 		alert.showAndWait();
 	}
 	
+    /**
+     * Unloads the current user information.
+     */
 	public void unloadUser () {
 		this.user = null;
 	}
 	
+    /**
+     * Handles the login action when the Enter key is pressed.
+     * Calls the login method.
+     *
+     * @param event The KeyEvent triggered by pressing a key.
+     */
 	@FXML
 	private void loginFromEnterKey(KeyEvent event) {
 		if (event.getCode() == KeyCode.ENTER)

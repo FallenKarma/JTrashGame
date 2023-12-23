@@ -36,6 +36,9 @@ import utilites.AudioManager;
 import utilites.CardImagesLoader;
 import utilites.LoggerUtil;
 
+/**
+ * Controller class for the game interface.
+ */
 public class GameController implements Initializable {
 	
 	private Game game;
@@ -177,18 +180,30 @@ public class GameController implements Initializable {
 	@FXML
 	ImageView p3slot10;
 	
-	
+
+    /**
+     * Initializes the controller.
+     */
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
 		imageViews = new ArrayList<>();
 		intializeImageViews();
 	}
 	
+    /**
+     * Sets up the game with the specified number of players and user.
+     *
+     * @param numberOfPlayers Number of players in the game.
+     * @param user            The user playing the game.
+     */
 	public void setUpGame (Integer numberOfPlayers,User user) {
 		game = Game.getGame(numberOfPlayers, user) ;
 		startRound();
 	}
 	
+    /**
+     * Initiates the start of a new round in the game.
+     */
 	private void startRound() {
 		resetImageViews();
 		assignCards();
@@ -196,6 +211,10 @@ public class GameController implements Initializable {
 		drawPhase();
 	}
 
+
+    /**
+     * Initiates the draw phase of the current player.
+     */
 	private void drawPhase() {
 		if (!game.getCurrentPlayer().isBot()) {
 			enableGameButtons();
@@ -205,6 +224,9 @@ public class GameController implements Initializable {
 		}
 	}
 	
+    /**
+     * Draw phase for bot players
+     */
 	private void botDrawPhase() {
 		if (game.getCurrentPlayer().canPlayCard(game.getWastePile().peek())) {
 			drawFromWastePile();
@@ -213,6 +235,9 @@ public class GameController implements Initializable {
 			drawFromDeck();
 	}
 
+    /**
+     * Initiates the game phase for the current player.
+     */
 	private void gamePhase() {
 		Player currentPlayer = game.getCurrentPlayer();
 		Card currentHandCard = currentPlayer.getCardInHand();
@@ -235,6 +260,9 @@ public class GameController implements Initializable {
 		}
 	}
 	
+    /**
+     * Initiates the next round in the game.
+     */
 	private void nextRound() {
 		if (game.getCurrentPlayer().wonGame()) {
 			game.getHumanPlayer().addLastGameToStats();
@@ -246,12 +274,20 @@ public class GameController implements Initializable {
 		}
 	}
 	
+
+    /**
+     * Initiates the card switch animation for the current player.
+     */
 	private void switchCards() {
 		Card currentHandCard = game.getCurrentPlayer().getCardInHand();
 		cardsSwitchAnimation(currentPlayerCardInHandImageView, currentHandCard.getValue() - 1);
 	}
 
-
+	/**
+	 * Retrieves the ImageView for the current player's card in hand.
+	 *
+	 * @return The ImageView for the current player's card in hand.
+	 */
 	private ImageView getCurrentPlayerCardInHandImageView() {
 		Integer currentPlayerNumber = game.getCurrentPlayerNumber();
 		switch (currentPlayerNumber) {
@@ -268,12 +304,18 @@ public class GameController implements Initializable {
 		}
 	}
 
+	/**
+	 * Initiates the next turn in the game.
+	 */
 	private void nextTurn() {
 		showChangeOfTurnTransition();
 		game.nextPlayer();
 		currentPlayerCardInHandImageView = getCurrentPlayerCardInHandImageView();
 	}
 	
+	/**
+	 * Initiates the special play for a king or joker card.
+	 */
 	private void kingOrJokerSpecialPlay() {
 		if (game.getCurrentPlayer().isBot()) {
 			Integer firstFaceDownCardPosition = game.getCurrentPlayer().getFirstFaceDownCard();
@@ -286,7 +328,9 @@ public class GameController implements Initializable {
 	}
 
 	
-
+	/**
+	 * Makes the cards clickable, setting up a callback for each card's click event.
+	 */
 	private void makeCardsClickable() {
 		for (int i = 0; i < imageViews.size(); i ++) {
 			this.imageViews.get(i).setOnMouseClicked( e-> {
@@ -298,7 +342,12 @@ public class GameController implements Initializable {
 	}
 
 
-
+	/**
+	 * Initiates the king switch animation for the clicked and player's card in hand ImageViews.
+	 *
+	 * @param clickedImageView    The ImageView of the clicked card.
+	 * @param userCardInHand      The ImageView of the player's card in hand.
+	 */
 	private void kingSwitchAnimation(ImageView clickedImageView, ImageView userCardInHand) {
 		Double firstImageAngle = clickedImageView.getRotate();
 		Double secondImageAngle = userCardInHand.getRotate();
@@ -324,6 +373,12 @@ public class GameController implements Initializable {
 		pt.play();
 	}
 
+
+/**
+ * Initiates the special king switch for the clicked card position.
+ *
+ * @param clickedImagePosition The position of the clicked card in the table.
+ */
 	private void specialKingSwitch(Integer clickedImagePosition) {
 		Card chosenCard = game.getCurrentPlayer().getTableCards()[clickedImagePosition];
 		if ( !chosenCard.isFaceDown() ) {
@@ -336,18 +391,26 @@ public class GameController implements Initializable {
 		}
 	}
 	
+	/**
+	 * Makes the cards non-clickable.
+	 */
 	private void makeCardsNonClickable() {
 		for (int i=0; i<10; i++) {
 			this.imageViews.get(i).setOnMouseClicked(null);
 		}
 	}
-
+	
+	/**
+	 * Initiates the player discard action.
+	 */
 	public void playerDiscard() {
 		game.currentPlayerDiscards();
 		playerDiscardAnimation();
 	}
 
-
+	/**
+	 * Assigns card images to the ImageViews based on the game state, representing each player's table cards.
+	 */
 	public void assignCards () {
 		int playerNumber = 0;
 		for (Player player:game.getPlayers()) {
@@ -364,12 +427,18 @@ public class GameController implements Initializable {
 	}
 	
 	
-	
+
+	/**
+	 * Enables game buttons (waste pile and deck).
+	 */
 	private void enableGameButtons() {
 		wastePileButton.setDisable(false);
 		deckButton.setDisable(false);			
 	}
 	
+	/**
+	 * Disables game buttons (waste pile, deck, and table cards).
+	 */
 	private void disableGameButtons() {
 		wastePileButton.setDisable(true);
 		deckButton.setDisable(true);
@@ -378,12 +447,19 @@ public class GameController implements Initializable {
 		}
 	}
 
+
+	/**
+	 * Initiates the process of the current player drawing a card from the deck.
+	 */
 	public void drawFromDeck () {
 		disableGameButtons();
 		game.currentPlayerDrawsFromDeck();
 		drawFromDeckAnimation();
 	}
 	
+	/**
+	 * Initiates the animation for drawing a card from the deck.
+	 */
 	private void drawFromDeckAnimation() {
 		
 		movingDeckImage.setImage(CardImagesLoader.getImageFromCardName(game.getCurrentPlayer().getCardInHand().toString()));
@@ -405,19 +481,28 @@ public class GameController implements Initializable {
 
 	}
 
-
+	/**
+	 * Initiates the process of the current player drawing a card from the waste pile.
+	 */
 	public void drawFromWastePile() {
 		disableGameButtons();
     	game.currentPlayerDrawsFromWastePile();
     	drawFromWastePileAnimation();
 	}
 	
+	/**
+	 * Updates the view for a single card in the table.
+	 *
+	 * @param position The position of the card in the table.
+	 */
 	private void updateSingleCardTableView(int position) {
 		Card tableCard = game.getCurrentPlayer().getTableCards()[position];
 		getImageViewFromCardValue(position).setImage(CardImagesLoader.getImageFromCardName(tableCard.toString()));
 	}
 
-
+	/**
+	 * Updates the view for the current player's card in hand.
+	 */
 	public void updateCardInHandView() {
 		Card userCardInHandEntity = game.getCurrentPlayer().getCardInHand();
 		if (userCardInHandEntity != null) {
@@ -427,6 +512,9 @@ public class GameController implements Initializable {
 			currentPlayerCardInHandImageView.setImage(null);
 	}
 	
+	/**
+	 * Initiates the animation for drawing a card from the waste pile.
+	 */
 	private void drawFromWastePileAnimation() {
 		setSecondWastePileCard();
 		
@@ -445,6 +533,9 @@ public class GameController implements Initializable {
 
 	}
 	
+	/**
+	 * Sets the second waste pile card ImageView based on the current state of the game.
+	 */
 	private void setSecondWastePileCard () {
 		if (!game.getWastePile().isEmpty()) {
 			Card card = game.getWastePile().peek();
@@ -454,6 +545,9 @@ public class GameController implements Initializable {
 			secondWastePileCard.setImage(null);
 	}
 	
+	/**
+	 * Initiates the animation for a player discarding a card.
+	 */
 	private void playerDiscardAnimation() {
 		Double userCardInHandAngle = currentPlayerCardInHandImageView.getRotate();
 		Double wastePileAngle = wastePile.getRotate();
@@ -469,6 +563,12 @@ public class GameController implements Initializable {
 		pt.play();
 	}
 	
+	/**
+	 * Initiates the animation for switching two cards on the table.
+	 *
+	 * @param image            The ImageView of the card being switched.
+	 * @param imageViewPosition The position of the target ImageView for the switch.
+	 */
 	public void cardsSwitchAnimation (ImageView image,Integer imageViewPosition) {
 
 		ImageView destinationImage = getImageViewFromCardValue(imageViewPosition);
@@ -495,6 +595,13 @@ public class GameController implements Initializable {
 		pt.play();
 	}
 	
+	/**
+	 * Creates a TranslateTransition for image translation animation.
+	 *
+	 * @param movingImage      The ImageView to be moved.
+	 * @param destinationImage The ImageView representing the destination.
+	 * @return The TranslateTransition instance.
+	 */
 	public TranslateTransition getTranslateAnimation(ImageView movingImage, ImageView destinationImage) {
 		double startX = destinationImage.getBoundsInParent().getCenterX();
 		double startY = destinationImage.getBoundsInParent().getCenterY();
@@ -506,7 +613,14 @@ public class GameController implements Initializable {
 		return translate;
 	}
 	
-	
+	/**
+	 * Switches images between two ImageViews.
+	 *
+	 * @param image              The source ImageView.
+	 * @param destinationImage   The destination ImageView.
+	 * @param firstImageAngle    The initial rotation angle of the source ImageView.
+	 * @param secondImageAngle   The initial rotation angle of the destination ImageView.
+	 */
 	private void switchImages(ImageView image, ImageView destinationImage, Double firstImageAngle, Double secondImageAngle) {
 		Image temporary = image.getImage();
 		
@@ -522,13 +636,23 @@ public class GameController implements Initializable {
 		
 	}
 
-	
+	/**
+	 * Creates a RotateTransition for image rotation animation.
+	 *
+	 * @param movingImage      The ImageView to be rotated.
+	 * @param destinationImage The ImageView representing the destination.
+	 * @return The RotateTransition instance.
+	 */
 	public RotateTransition getRotateAnimation(ImageView movingImage, ImageView destinationImage) {
 		RotateTransition rotate = new RotateTransition(Duration.millis(1000), movingImage);
 		rotate.setToAngle(destinationImage.getRotate());
 		return rotate;
 	}
 	
+
+	/**
+	 * Initiates the end-of-game animation and displays the corresponding message.
+	 */
 	private void endOfGameAnimation() {
 		if (game.getCurrentPlayer().isBot())
 			userMessages.setText(gameLostMessage);
@@ -543,6 +667,9 @@ public class GameController implements Initializable {
 		fadeInTransition.play();
 	}
 	
+	/**
+	 * Displays the end-of-game alert, allowing the user to exit the game or go to the main page.
+	 */
 	private void showEndOfGameAlert() {
 		Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
 		alert.setTitle("END OF THE GAME");
@@ -566,6 +693,9 @@ public class GameController implements Initializable {
         });
 	}
 
+	/**
+	 * Displays the round result message and initiates the next round.
+	 */
 	private void showRoundResult () {
 		if (game.getCurrentPlayer().isBot())
 			userMessages.setText(roundLostMessage);
@@ -581,6 +711,9 @@ public class GameController implements Initializable {
 		fadeInTransition.play();
 	}
 	
+	/**
+	 * Initiates the animation for the end of a round.
+	 */
 	private void endOfRoundAnimation() {
 		ParallelTransition pt = new ParallelTransition();
 		for (ImageView image:imageViews) {
@@ -592,6 +725,9 @@ public class GameController implements Initializable {
 		pt.play();
 	}
 	
+	/**
+	 * Initiates the animation for the start of a round.
+	 */
 	private void startRoundAnimation () {
 		ParallelTransition pt = new ParallelTransition();
 		for (ImageView image:imageViews) {
@@ -603,6 +739,12 @@ public class GameController implements Initializable {
 		pt.play();
 	}
 	
+	/**
+	 * Retrieves the ImageView associated with a card value.
+	 *
+	 * @param cardValue The value representing the position of the card.
+	 * @return The ImageView associated with the card value.
+	 */
 	public ImageView getImageViewFromCardValue (Integer cardValue) {
 		if (cardValue.equals(deckImageViewPosition)) 
 			return movingDeckImage;
@@ -613,6 +755,9 @@ public class GameController implements Initializable {
 		return imageViews.get(position);
 	}
 	
+	/**
+	 * Displays a warning alert for choosing an invalid card.
+	 */
 	public void showInvalidCardChosenError() {
 		Alert alert = new Alert(Alert.AlertType.WARNING);
 		alert.setTitle("Errore");
@@ -621,6 +766,9 @@ public class GameController implements Initializable {
 		alert.showAndWait();
 	}
 	
+	/**
+	 * Initiates the change of turn transition, updating the user messages accordingly.
+	 */
 	public void showChangeOfTurnTransition () {
 		if ( !game.getCurrentPlayer().isBot() ) {
 			userMessages.setText(userTurnOverMessage);
@@ -638,6 +786,12 @@ public class GameController implements Initializable {
         
 	}
 	
+	/**
+	 * Creates a FadeTransition for the fadeIn effect on a Node.
+	 *
+	 * @param node The Node to which the fadeIn effect will be applied.
+	 * @return The FadeTransition instance.
+	 */
 	public FadeTransition getFadeInTransition (Node node) {
         FadeTransition fadeTransition = new FadeTransition(Duration.seconds(2), node);
         fadeTransition.setFromValue(0.0); 
@@ -645,6 +799,12 @@ public class GameController implements Initializable {
         return fadeTransition;
 	}
 	
+	/**
+	 * Creates a FadeTransition for the fadeOut effect on a Node.
+	 *
+	 * @param node The Node to which the fadeOut effect will be applied.
+	 * @return The FadeTransition instance.
+	 */
 	public FadeTransition getFadeOutTransition (Node node) {
         FadeTransition fadeTransition = new FadeTransition(Duration.seconds(2), node);
         fadeTransition.setFromValue(1.0); 
@@ -652,11 +812,17 @@ public class GameController implements Initializable {
         return fadeTransition;
 	}
 	
+	/**
+	 * Resets all ImageViews to null, representing an initial state.
+	 */
 	public void resetImageViews () {
 		imageViews.stream().forEach( i -> i .setImage(null));
 		deck.setImage(CardImagesLoader.getBackOfCardImage());
 	}
 	
+	/**
+	 * Adds all the image views to an Array
+	 */
 	public void intializeImageViews () {
 		
 		currentPlayerCardInHandImageView = userCardInHand;
@@ -712,6 +878,12 @@ public class GameController implements Initializable {
 		imageViews.add(p3cardInHand);
 	}
 	
+	/**
+	 * Switches the application view to the user view, loading the corresponding FXML file.
+	 * Retrieves the user information from the game's human player and sets it in the UserController.
+	 *
+	 * @throws IOException If an error occurs while loading the FXML file.
+	 */
 	private void switchToUserView () throws IOException {
 		Parent root = null;
 		Stage stage;

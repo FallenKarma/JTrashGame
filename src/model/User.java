@@ -10,6 +10,10 @@ import customExceptions.UnexistingUserException;
 import customExceptions.UserAlreadyExistsException;
 import utilites.JsonManager;
 
+/**
+ * Represents a user in the application.
+ * A user has a nickname, tracks the number of games played, games won, games lost, and their level.
+ */
 public class User {
 	
 	private String nickname;
