@@ -17,7 +17,7 @@ public class Player {
     /**
      * Constructor for a real player.
      *
-     * @param username The username of the player.
+     * @param user The real person user.
      */
     public Player(User user) {
     	this.user = user;
