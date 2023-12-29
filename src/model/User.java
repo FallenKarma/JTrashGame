@@ -26,7 +26,7 @@ public class User {
     /**
      * List of games won required to level up.
      */
-    private static final ArrayList<Integer> LEVELUPSTEPS = new ArrayList<>(List.of(1, 3, 6, 10, 15, 25, 30));
+    private static final ArrayList<Integer> LEVELUPSTEPS = new ArrayList<>(List.of(1, 4, 15, 35, 60));
     
     private static final String USERNAME_NOT_VALID_MESSAGE = "Username not valid!";
     private static final String UNEXISTING_USER_MESSAGE = "Unexisting user!";

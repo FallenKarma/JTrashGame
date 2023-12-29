@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.*?>
+<?import javafx.scene.effect.*?>
 <?import javafx.scene.image.*?>
 <?import javafx.scene.text.*?>
 <?import javafx.geometry.*?>
@@ -29,27 +31,42 @@
                <font>
                   <Font name="Century" size="46.0" />
                </font>
+               <effect>
+                  <Shadow />
+               </effect>
             </Label>
-            <Label alignment="TOP_CENTER" styleClass="welcomeViewMiddlePhrase" stylesheets="@application.css" text="INSERISCI IL TUO USERNAME O CREA UN NUOVO UTENTE " textFill="#0d0c0c" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="TOP">
+            <TextField fx:id="usernameTF" alignment="TOP_CENTER" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="31.0" prefWidth="452.0" promptText="INSERISCI IL TUO USERNAME O CREA UN NUOVO UTENTE " style="-fx-background-radius: 5px;" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="TOP">
                <font>
-                  <Font name="Candara Bold" size="21.0" />
+                  <Font name="HoloLens MDL2 Assets" size="15.0" />
                </font>
-            </Label>
-            <TextField fx:id="usernameTF" alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="31.0" prefWidth="452.0" promptText="username" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
-            <Button fx:id="loginButton" mnemonicParsing="false" onAction="#login" text="ACCEDI" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="TOP" />
+               <GridPane.margin>
+                  <Insets top="30.0" />
+               </GridPane.margin></TextField>
+            <Button fx:id="loginButton" mnemonicParsing="false" onAction="#login" style="-fx-background-radius: 5px;" text="ACCEDI" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER">
+               <GridPane.margin>
+                  <Insets top="50.0" />
+               </GridPane.margin>
+               <cursor>
+                  <Cursor fx:constant="V_RESIZE" />
+               </cursor></Button>
             <ImageView fx:id="imageLeft" fitHeight="180.0" fitWidth="150.0" pickOnBounds="true" preserveRatio="true" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER">
                <image>
                   <Image url="@../resources/carte/black_joker.png" />
                </image></ImageView>
             <ImageView fx:id="imageRight" fitHeight="180.0" fitWidth="150.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER">
                <image>
-                  <Image url="@../resources/carte/ace_of_spades.png" />
+                  <Image url="@../resources/carte/black_joker.png" />
                </image></ImageView>
-            <Button mnemonicParsing="false" onAction="#register" text="REGISTRATI" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="TOP">
+            <Button mnemonicParsing="false" onAction="#register" style="-fx-background-radius: 5px;" text="REGISTRATI" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER">
                <GridPane.margin>
-                  <Insets top="50.0" />
+                  <Insets top="130.0" />
                </GridPane.margin>
             </Button>
+            <Label fx:id="secondLabel" opacity="0.0" text="BENVENUTO IN JTRASH" textFill="#df0000" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
+               <font>
+                  <Font name="Century" size="46.0" />
+               </font>
+            </Label>
          </children>
       </GridPane>
    </children>

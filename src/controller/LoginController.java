@@ -1,26 +1,33 @@
 package controller;
 
 import java.io.IOException;
+import java.net.URL;
+import java.util.ResourceBundle;
 
 import customExceptions.IncorrectUserNameException;
 import customExceptions.UnexistingUserException;
 import customExceptions.UserAlreadyExistsException;
+import javafx.animation.FadeTransition;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 import model.User;
+import utilites.LoggerUtil;
 
 /**
  * Controller class responsible for handling user login and registration actions.
  * Manages the interaction between the user interface and the User model.
  */
-public class LoginController {
+public class LoginController implements Initializable{
 	
 	private Parent root;
 	private Scene scene;
@@ -28,6 +35,9 @@ public class LoginController {
 	
 	@FXML
 	TextField usernameTF;
+	
+	@FXML
+	Label secondLabel;
 	
     /**
      * Registers a new user with the provided username.
@@ -138,5 +148,23 @@ public class LoginController {
 	private void loginFromEnterKey(KeyEvent event) {
 		if (event.getCode() == KeyCode.ENTER)
 			login();
+	}
+
+	/**
+	 * actions on start
+	 */
+	@Override
+	public void initialize(URL arg0, ResourceBundle arg1) {
+		playFadeInTransitionForGameTitle();
+	}
+	
+	/**
+	 * Start the fade in transition for the game title
+	 */
+	public void playFadeInTransitionForGameTitle() {
+		FadeTransition transition = new FadeTransition(Duration.seconds(3.5), secondLabel);
+		transition.setByValue(0.0);
+		transition.setToValue(1.0);
+		transition.play();
 	}
 }
