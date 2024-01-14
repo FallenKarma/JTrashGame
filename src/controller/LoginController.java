@@ -139,13 +139,12 @@ public class LoginController implements Initializable{
 	}
 	
     /**
-     * Handles the login action when the Enter key is pressed.
-     * Calls the login method.
+     * Handles action when a keyboard key is pressed
      *
      * @param event The KeyEvent triggered by pressing a key.
      */
 	@FXML
-	private void loginFromEnterKey(KeyEvent event) {
+	private void keyPressedHandler(KeyEvent event) {
 		if (event.getCode() == KeyCode.ENTER)
 			login();
 	}

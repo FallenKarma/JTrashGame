@@ -25,6 +25,8 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 import javafx.util.Duration;
@@ -896,6 +898,41 @@ public class GameController implements Initializable {
 		stage.setScene(scene);
 		stage.centerOnScreen();
 		stage.show();
+	}
+	
+    /**
+     * Handles action when a keyboard key is pressed
+     *
+     * @param event The KeyEvent triggered by pressing a key.
+     */
+	@FXML
+	private void keyPressedHandler(KeyEvent event) {
+		if (event.getCode() == KeyCode.P)
+		{
+			showQuitGameWindow();
+		}
+	}
+
+	private void showQuitGameWindow() {
+		Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+		alert.setTitle("Pause menu");
+		
+        ButtonType resumeButton = new ButtonType("Resume");
+        ButtonType goToMainButton = new ButtonType("Go back to user home page");
+
+        alert.getButtonTypes().setAll(resumeButton, goToMainButton);
+
+        alert.showAndWait().ifPresent(response -> {
+            if (response == resumeButton) {
+//                System.exit(0);
+            } else if (response == goToMainButton) {
+                try {
+					switchToUserView();
+				} catch (IOException e1) {
+					LoggerUtil.logError(e1.getMessage());
+				}
+            }
+        });
 	}
 
 

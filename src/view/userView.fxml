@@ -29,7 +29,7 @@
                   <Insets left="60.0" />
                </GridPane.margin>
             </Rectangle>
-            <Label fx:id="welcomeUserLabel" text="CIAO" textFill="WHITE" GridPane.columnIndex="2" GridPane.columnSpan="2147483647" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
+            <Label fx:id="welcomeUserLabel" text="CIAO" textFill="WHITE" GridPane.columnIndex="2" GridPane.columnSpan="2147483647" GridPane.halignment="CENTER" GridPane.valignment="BOTTOM">
                <font>
                   <Font name="Cambria Bold Italic" size="36.0" />
                </font>
@@ -59,10 +59,13 @@
                   <Insets bottom="50.0" left="70.0" />
                </GridPane.margin>
             </Label>
-            <Label text="SCEGLI IL NUMERO DI AVVERSARI" textFill="WHITE" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="TOP">
+            <Label prefHeight="54.0" prefWidth="400.0" text="SCEGLI IL NUMERO DI AVVERSARI" textFill="WHITE" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="TOP">
                <font>
                   <Font name="Cambria Italic" size="27.0" />
                </font>
+               <padding>
+                  <Insets top="40.0" />
+               </padding>
             </Label>
             <ChoiceBox fx:id="numberOfBots" prefWidth="150.0" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
             <Button fx:id="startGameButton" mnemonicParsing="false" onAction="#startGame" text="GIOCA" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="BOTTOM" />
