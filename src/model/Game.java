@@ -11,6 +11,7 @@ public class Game {
 
     private static Game game = null;
 
+    private Boolean gameRunning = false;
     private ArrayList<Player> players;
     private Integer numberOfPlayers;
     private DeckOfCards deckOfCards;
@@ -31,7 +32,7 @@ public class Game {
             game = new Game(numberOfPlayers, user);
         }
         else
-        	game.resetGame(numberOfPlayers, user);
+        	game.createNewGame(numberOfPlayers, user);
         return game;
     }
 
@@ -40,6 +41,7 @@ public class Game {
         this.players = new ArrayList<>();
         this.wastePile = new Stack<>();
         this.gameOver = false;
+        this.gameRunning = true;
         initializeGame(user);
     }
 
@@ -56,15 +58,20 @@ public class Game {
     }
     
     /**
-     * Resets the game by setting up the deck, discard pile, players, and assigning cards.
+     * Creates a new game by setting up the deck, discard pile, players, and assigning cards.
      *
      * @param user The user representing one of the players.
      */
-    public void resetGame(Integer numberOfPlayers, User user) {
+    public void createNewGame(Integer numberOfPlayers, User user) {
+    	gameRunning = true;
     	this.numberOfPlayers = numberOfPlayers;
     	initializeGame(user);
     }
 
+    public void end () {
+    	gameRunning = false;
+    }
+    
     /**
      * Initializes the deck based on the number of players.
      *
@@ -277,5 +284,9 @@ public class Game {
      */
     public Player getHumanPlayer() {
     	return players.get(0);
+    }
+    
+    public Boolean isRunning() {
+    	return gameRunning;
     }
 }

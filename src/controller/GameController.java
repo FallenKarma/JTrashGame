@@ -218,6 +218,8 @@ public class GameController implements Initializable {
      * Initiates the draw phase of the current player.
      */
 	private void drawPhase() {
+		if (!game.isRunning())
+			return;
 		if (!game.getCurrentPlayer().isBot()) {
 			enableGameButtons();
 		}
@@ -241,6 +243,8 @@ public class GameController implements Initializable {
      * Initiates the game phase for the current player.
      */
 	private void gamePhase() {
+		if (!game.isRunning())
+			return;
 		Player currentPlayer = game.getCurrentPlayer();
 		Card currentHandCard = currentPlayer.getCardInHand();
 		if (currentHandCard != null) {
@@ -900,40 +904,18 @@ public class GameController implements Initializable {
 		stage.show();
 	}
 	
-    /**
-     * Handles action when a keyboard key is pressed
-     *
-     * @param event The KeyEvent triggered by pressing a key.
-     */
 	@FXML
-	private void keyPressedHandler(KeyEvent event) {
-		if (event.getCode() == KeyCode.P)
-		{
-			showQuitGameWindow();
+	private void quitGame () {
+		game.end();
+		try {
+			switchToUserView();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	}
-
-	private void showQuitGameWindow() {
-		Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-		alert.setTitle("Pause menu");
-		
-        ButtonType resumeButton = new ButtonType("Resume");
-        ButtonType goToMainButton = new ButtonType("Go back to user home page");
-
-        alert.getButtonTypes().setAll(resumeButton, goToMainButton);
-
-        alert.showAndWait().ifPresent(response -> {
-            if (response == resumeButton) {
-//                System.exit(0);
-            } else if (response == goToMainButton) {
-                try {
-					switchToUserView();
-				} catch (IOException e1) {
-					LoggerUtil.logError(e1.getMessage());
-				}
-            }
-        });
-	}
+	
+	
 
 
 

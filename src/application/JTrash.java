@@ -11,7 +11,7 @@ import javafx.stage.Stage;
 /**
  * The main class responsible for launching the JavaFX application.
  */
-public class Main extends Application {
+public class JTrash extends Application {
 
     /**
      * The entry point of the JavaFX application.
