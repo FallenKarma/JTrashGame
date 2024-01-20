@@ -376,6 +376,7 @@ public class GameController implements Initializable {
 			else
 				gamePhase();
 		});
+		AudioManager.getInstance().reproduceCardFlippingSound();
 		pt.play();
 	}
 
@@ -483,6 +484,7 @@ public class GameController implements Initializable {
 			movingDeckImage.setImage(null);
 			gamePhase();
 		});
+		AudioManager.getInstance().reproduceCardFlippingSound();
 		pt.play();
 
 	}
@@ -719,6 +721,7 @@ public class GameController implements Initializable {
 	
 	/**
 	 * Initiates the animation for the end of a round.
+	 * Makes all the cards disappear with a fade out
 	 */
 	private void endOfRoundAnimation() {
 		ParallelTransition pt = new ParallelTransition();
@@ -733,6 +736,7 @@ public class GameController implements Initializable {
 	
 	/**
 	 * Initiates the animation for the start of a round.
+	 * Makes all the cards appear with a fade in
 	 */
 	private void startRoundAnimation () {
 		ParallelTransition pt = new ParallelTransition();
@@ -828,6 +832,10 @@ public class GameController implements Initializable {
 	
 	/**
 	 * Adds all the image views to an Array
+	 * indexes from 0 to 9 contain user cards imageViews
+	 * indexes from 10 to 19 contain left player's cards imageViews
+	 * indexes from 20 to 29 contain top player's cards imageViews
+	 * indexes from 30 to 39 contain right player's cards imageViews
 	 */
 	public void intializeImageViews () {
 		
@@ -904,9 +912,13 @@ public class GameController implements Initializable {
 		stage.show();
 	}
 	
+	
+	/**
+	 * Actions exectued when the user decides to leave the current game
+	 */
 	@FXML
 	private void quitGame () {
-		game.end();
+		game.endGame();
 		try {
 			switchToUserView();
 		} catch (IOException e) {

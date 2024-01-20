@@ -60,6 +60,7 @@ public class Game {
     /**
      * Creates a new game by setting up the deck, discard pile, players, and assigning cards.
      *
+     * @param numberOfPlayers The number of players participating in the game
      * @param user The user representing one of the players.
      */
     public void createNewGame(Integer numberOfPlayers, User user) {
@@ -68,7 +69,11 @@ public class Game {
     	initializeGame(user);
     }
 
-    public void end () {
+    /**
+     * Sets the variable that indicates if the game is running or not
+     * to false, indicating the end of the game
+     */
+    public void endGame () {
     	gameRunning = false;
     }
     
