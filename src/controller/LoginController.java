@@ -103,7 +103,7 @@ public class LoginController implements Initializable{
 		Alert alert = new Alert(Alert.AlertType.WARNING);
 		alert.setTitle("Errore");
 		alert.setHeaderText("Username non valido!");
-		alert.setContentText("Inserisci uno username valido che contenga solo lettere o numeri!");
+		alert.setContentText("Inserisci uno username valido che contenga solo lettere e/o numeri!");
 		alert.showAndWait();
 	}
 	
